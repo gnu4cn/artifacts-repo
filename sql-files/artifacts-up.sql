@@ -6,5 +6,6 @@ CREATE TABLE artifacts (
     filename VARCHAR(255) NOT NULL,
     filesize NUMERIC(4, 2) NOT NULL,
     filesize_unit size_unit NOT NULL,
-    release_id INTEGER NOT NULL REFERENCES releases(release_id)
+    release_id INTEGER NOT NULL REFERENCES releases(release_id),
+    CONSTRAINT artifact_pkey PRIMARY KEY (artifact_id)
 );

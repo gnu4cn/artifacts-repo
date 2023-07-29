@@ -6,5 +6,6 @@ CREATE TABLE releases (
     channel channel_type NOT NULL DEFAULT 'nightly',
     repo_fullname VARCHAR(255) NOT NULL,
     diffs_url VARCHAR(512) NOT NULL,
-    released_at DATE NOT NULL DEFAULT CURRENT_DATE
+    released_at DATE NOT NULL DEFAULT CURRENT_DATE,
+    CONSTRAINT release_pkey PRIMAY KEY (release_id)
 );

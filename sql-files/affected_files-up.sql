@@ -5,5 +5,6 @@ CREATE TABLE affected_files (
     affected_file_id SERIAL PRIMARY KEY,
     file_edit_type edit_type NOT NULL,
     file_path VARCHAR(511) NOT NULL,
-    release_id INTEGER NOT NULL REFERENCES releases(release_id)
+    release_id INTEGER NOT NULL REFERENCES releases(release_id),
+    CONSTRAINT affected_file_pkey PRIMARY KEY (affected_file_id)
 );

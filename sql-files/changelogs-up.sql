@@ -5,5 +5,6 @@ CREATE TABLE changelogs (
     commited_at TIMESTAMP NOT NULL,
     commit_comment VARCHAR(2048) NOT NULL,
     commited_by VARCHAR(255) NOT NULL,
-    release_id INTEGER NOT NULL REFERENCES releases(release_id)
+    release_id INTEGER NOT NULL REFERENCES releases(release_id),
+    CONSTRAINT changelog_pkey PRIMAY KEY (changelog_id)
 );
