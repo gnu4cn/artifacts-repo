@@ -65,7 +65,7 @@ diesel::table! {
         #[max_length = 255]
         repo_fullname -> Varchar,
         #[max_length = 512]
-        diffs_url -> Varchar,
+        diffs_url -> Nullable<Varchar>,
         released_at -> Date,
     }
 }

@@ -5,9 +5,8 @@ CREATE TABLE releases (
     release_id SERIAL PRIMARY KEY,
     channel channel_type NOT NULL DEFAULT 'nightly',
     repo_fullname VARCHAR(255) NOT NULL,
-    diffs_url VARCHAR(512) NOT NULL,
-    released_at DATE NOT NULL DEFAULT CURRENT_DATE,
-    CONSTRAINT release_pkey PRIMAY KEY (release_id)
+    diffs_url VARCHAR(512),
+    released_at DATE NOT NULL DEFAULT CURRENT_DATE
 );
 
 -- Create table changelogs;
@@ -17,8 +16,7 @@ CREATE TABLE changelogs (
     commited_at TIMESTAMP NOT NULL,
     commit_comment VARCHAR(2048) NOT NULL,
     commited_by VARCHAR(255) NOT NULL,
-    release_id INTEGER NOT NULL REFERENCES releases(release_id),
-    CONSTRAINT changelog_pkey PRIMAY KEY (changelog_id)
+    release_id INTEGER NOT NULL REFERENCES releases(release_id)
 );
 
 
@@ -30,8 +28,7 @@ CREATE TABLE artifacts (
     filename VARCHAR(255) NOT NULL,
     filesize NUMERIC(4, 2) NOT NULL,
     filesize_unit size_unit NOT NULL,
-    release_id INTEGER NOT NULL REFERENCES releases(release_id),
-    CONSTRAINT artifact_pkey PRIMARY KEY (artifact_id)
+    release_id INTEGER NOT NULL REFERENCES releases(release_id)
 );
 
 
@@ -42,6 +39,5 @@ CREATE TABLE affected_files (
     affected_file_id SERIAL PRIMARY KEY,
     file_edit_type edit_type NOT NULL,
     file_path VARCHAR(511) NOT NULL,
-    release_id INTEGER NOT NULL REFERENCES releases(release_id),
-    CONSTRAINT affected_file_pkey PRIMARY KEY (affected_file_id)
+    release_id INTEGER NOT NULL REFERENCES releases(release_id)
 );
