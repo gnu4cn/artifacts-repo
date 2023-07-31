@@ -1,10 +1,15 @@
 use actix_web::middleware::Logger;
 use actix_web::{App, HttpServer};
-use crate::handlers::health_checker_handler;
 
 mod handlers;
 mod models;
 mod schema;
+
+use crate::handlers::{
+    health_checker_handler,
+    greet,
+    greet_default,
+};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -13,11 +18,13 @@ async fn main() -> std::io::Result<()> {
     }
     env_logger::init();
 
-    println!("\nServer started successfully...\n");
+    println!("Server started successfully...");
 
     HttpServer::new(move || {
         App::new()
             .service(health_checker_handler)
+            .service(greet)
+            .service(greet_default)
             .wrap(Logger::default())
     })
     .bind(("0.0.0.0", 20080))?
