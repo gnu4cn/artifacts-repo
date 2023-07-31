@@ -1,6 +1,6 @@
 use actix_web::{web, App, HttpServer};
 
-pub mod handlers;
+mod handlers;
 
 use crate::handlers::*;
 
