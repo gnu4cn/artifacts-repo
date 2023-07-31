@@ -14,8 +14,8 @@ pub enum ChannelType {
 #[ExistingTypePath = "crate::schema::sql_types::EditType"]
 pub enum ChannelType {
     Add,
-    Delete,
     Edit,
+    Delete,
 }
 
 #[derive(diesel_derive_enum::DbEnum)]
