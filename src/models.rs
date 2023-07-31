@@ -1,8 +1,9 @@
 use serde::Serialize;
+use diesel_derive_enum::DbEnum;
 
 use crate::schema::{releases, changelogs, artifacts, affected_files};
 
-#[derive(diesel_derive_enum::DbEnum)]
+#[derive(DbEnum, Debug)]
 #[ExistingTypePath = "crate::schema::sql_types::ChannelType"]
 pub enum ChannelType {
     Nightly,
@@ -10,17 +11,17 @@ pub enum ChannelType {
     Stable,
 }
 
-#[derive(diesel_derive_enum::DbEnum)]
+#[derive(DbEnum, Debug)]
 #[ExistingTypePath = "crate::schema::sql_types::EditType"]
-pub enum ChannelType {
+pub enum EditType {
     Add,
     Edit,
     Delete,
 }
 
-#[derive(diesel_derive_enum::DbEnum)]
+#[derive(DbEnum, Debug)]
 #[ExistingTypePath = "crate::schema::sql_types::SizeUnit"]
-pub enum ChannelType {
+pub enum SizeUnit {
     Kb,
     Mb,
     Gb,
