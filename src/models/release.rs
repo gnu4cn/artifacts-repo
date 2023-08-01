@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 use chrono::NaiveDate;
 use uuid::Uuid;
 
-
 use crate::{
     config::db::Connection,
     schema::releases::{self, dsl::*},

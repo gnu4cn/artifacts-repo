@@ -5,4 +5,3 @@ pub struct GenericResponse {
     pub status: String,
     pub message: String,
 }
-
