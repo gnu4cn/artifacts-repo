@@ -4,6 +4,7 @@ use actix_web::{App, HttpServer};
 mod handlers;
 mod models;
 mod schema;
+mod config;
 
 use crate::handlers::{
     health_checker_handler,

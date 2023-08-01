@@ -1,6 +1,6 @@
 use actix_web::{get, web, HttpResponse, Responder};
 
-use crate::models::GenericResponse;
+use crate::models::response::GenericResponse;
 
 #[get("/api/healthchecker")]
 async fn health_checker_handler() -> impl Responder {
