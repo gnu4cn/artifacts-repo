@@ -1,15 +1,17 @@
 use actix_web::middleware::Logger;
 use actix_web::{App, HttpServer};
 
-mod handlers;
+mod services;
 mod models;
 mod schema;
 mod config;
 
-use crate::handlers::{
-    health_checker_handler,
-    greet,
-    greet_default,
+use crate::services::{
+    hello::{
+        greet,
+        greet_default,
+    },
+    health_checker::health_checker_handler,
 };
 
 #[actix_web::main]
