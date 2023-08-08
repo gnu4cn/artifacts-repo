@@ -1,12 +1,12 @@
 use actix_web::middleware::Logger;
 use actix_web::{App, HttpServer};
 
-mod services;
+mod api;
 mod models;
 mod schema;
 mod config;
 
-use crate::services::{
+use crate::api::{
     hello::{
         greet,
         greet_default,
