@@ -5,14 +5,8 @@ mod api;
 mod models;
 mod schema;
 mod config;
+mod error;
 
-use crate::api::{
-    hello::{
-        greet,
-        greet_default,
-    },
-    health_checker::health_checker_handler,
-};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
