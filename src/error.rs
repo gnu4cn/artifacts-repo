@@ -1,9 +1,11 @@
 use crate::models::response::ResponseBody;
+
 use actix_web::{
     error,
     http::{header::ContentType, StatusCode},
     HttpResponse,
 };
+
 use derive_more::{Display, Error};
 
 #[derive(Debug, Display, Error)]

@@ -1,0 +1,137 @@
+   Compiling artifacts-repo v0.1.0 (/home/lenny.peng/artifacts-repo)
+warning: unused import: `io`
+ --> src/main.rs:1:16
+  |
+1 | use std::{env, io, default::Default};
+  |                ^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `web`
+ --> src/api/health_checker.rs:1:22
+  |
+1 | use actix_web::{get, web, HttpResponse, Responder};
+  |                      ^^^
+
+warning: unused imports: `Identifiable`, `Insertable`, `Queryable`, `prelude::*`
+ --> src/models/release.rs:1:14
+  |
+1 | use diesel::{prelude::*, Identifiable, Insertable, Queryable};
+  |              ^^^^^^^^^^  ^^^^^^^^^^^^  ^^^^^^^^^^  ^^^^^^^^^
+
+warning: unused imports: `Deserialize`, `Serialize`
+ --> src/models/release.rs:2:13
+  |
+2 | use serde::{Deserialize, Serialize};
+  |             ^^^^^^^^^^^  ^^^^^^^^^
+
+warning: unused import: `chrono::NaiveDate`
+ --> src/models/release.rs:3:5
+  |
+3 | use chrono::NaiveDate;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `uuid::Uuid`
+ --> src/models/release.rs:4:5
+  |
+4 | use uuid::Uuid;
+  |     ^^^^^^^^^^
+
+warning: unused imports: `config::db::Connection`, `dsl::*`, `models::db_enum::ChannelType`, `self`
+ --> src/models/release.rs:7:5
+  |
+7 |     config::db::Connection,
+  |     ^^^^^^^^^^^^^^^^^^^^^^
+8 |     schema::releases::{self, dsl::*},
+  |                        ^^^^  ^^^^^^
+9 |     models::db_enum::ChannelType,
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0277]: the trait bound `health_checker_handler: Handler<_>` is not satisfied
+   --> src/config/app.rs:20:65
+    |
+20  |             web::resource("/healthchecker").route(web::get().to(health_checker_handler)),
+    |                                                              -- ^^^^^^^^^^^^^^^^^^^^^^ the trait `Handler<_>` is not implemented for `health_checker_handler`
+    |                                                              |
+    |                                                              required by a bound introduced by this call
+    |
+note: required by a bound in `Route::to`
+   --> /home/lenny.peng/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/actix-web-4.3.1/src/route.rs:211:12
+    |
+211 |         F: Handler<Args>,
+    |            ^^^^^^^^^^^^^ required by this bound in `Route::to`
+
+error[E0277]: the trait bound `greet_default: Handler<_>` is not satisfied
+   --> src/config/app.rs:26:34
+    |
+26  |             .route(web::get().to(greet_default)),
+    |                               -- ^^^^^^^^^^^^^ the trait `Handler<_>` is not implemented for `greet_default`
+    |                               |
+    |                               required by a bound introduced by this call
+    |
+note: required by a bound in `Route::to`
+   --> /home/lenny.peng/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/actix-web-4.3.1/src/route.rs:211:12
+    |
+211 |         F: Handler<Args>,
+    |            ^^^^^^^^^^^^^ required by this bound in `Route::to`
+
+error[E0277]: the trait bound `greet: Handler<_>` is not satisfied
+   --> src/config/app.rs:30:34
+    |
+30  |             .route(web::get().to(greet)),
+    |                               -- ^^^^^ the trait `Handler<_>` is not implemented for `greet`
+    |                               |
+    |                               required by a bound introduced by this call
+    |
+note: required by a bound in `Route::to`
+   --> /home/lenny.peng/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/actix-web-4.3.1/src/route.rs:211:12
+    |
+211 |         F: Handler<Args>,
+    |            ^^^^^^^^^^^^^ required by this bound in `Route::to`
+
+error[E0061]: this method takes 1 argument but 2 arguments were supplied
+   --> src/config/app.rs:16:9
+    |
+16  |        cfg.service(
+    |            ^^^^^^^
+...
+21  |            ),
+    |  ___________-
+22  | |/         web::scope("/hello")
+23  | ||         .service(ping)
+24  | ||         .service(
+25  | ||             web::resource("")
+...   ||
+30  | ||             .route(web::get().to(greet)),
+31  | ||         ),
+    | ||         -
+    | ||_________|
+    |  |_________help: remove the extra argument
+    |            unexpected argument of type `actix_web::Scope`
+    |
+note: method defined here
+   --> /home/lenny.peng/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/actix-web-4.3.1/src/config.rs:277:12
+    |
+277 |     pub fn service<F>(&mut self, factory: F) -> &mut Self
+    |            ^^^^^^^
+
+error[E0599]: `<<impl ServiceFactory<ServiceRequest, Config = (), Response = ServiceResponse<middleware::logger::StreamLog<EitherBody<BoxBody>>>, Error = actix_web::Error, InitError = ()> as ServiceFactory<ServiceRequest>>::Service as actix_web::dev::Service<ServiceRequest>>::Future` is not an iterator
+  --> src/main.rs:49:47
+   |
+49 |             .wrap_fn(|req, srv| srv.call(req).map(|res| res))
+   |                                               ^^^ `<<impl ServiceFactory<ServiceRequest, Config = (), Response = ServiceResponse<middleware::logger::StreamLog<EitherBody<BoxBody>>>, Error = actix_web::Error, InitError = ()> as ServiceFactory<ServiceRequest>>::Service as actix_web::dev::Service<ServiceRequest>>::Future` is not an iterator
+   |
+   = note: the full type name has been written to '/home/lenny.peng/artifacts-repo/target/debug/deps/artifacts_repo-f7d6525a41bd80c9.long-type-12823162033394294194.txt'
+   = note: the following trait bounds were not satisfied:
+           `<<impl ServiceFactory<ServiceRequest, Config = (), Response = ServiceResponse<middleware::logger::StreamLog<EitherBody<BoxBody>>>, Error = actix_web::Error, InitError = ()> as ServiceFactory<ServiceRequest>>::Service as actix_web::dev::Service<ServiceRequest>>::Future: Iterator`
+           which is required by `&mut <<impl ServiceFactory<ServiceRequest, Config = (), Response = ServiceResponse<middleware::logger::StreamLog<EitherBody<BoxBody>>>, Error = actix_web::Error, InitError = ()> as ServiceFactory<ServiceRequest>>::Service as actix_web::dev::Service<ServiceRequest>>::Future: Iterator`
+   = help: items from traits can only be used if the trait is in scope
+help: the following trait is implemented but not in scope; perhaps add a `use` for it:
+   |
+1  | use futures_util::future::future::FutureExt;
+   |
+
+Some errors have detailed explanations: E0061, E0277, E0599.
+For more information about an error, try `rustc --explain E0061`.
+warning: `artifacts-repo` (bin "artifacts-repo") generated 7 warnings
+error: could not compile `artifacts-repo` due to 5 previous errors; 7 warnings emitted

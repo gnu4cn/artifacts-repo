@@ -285,6 +285,7 @@ dependencies = [
  "actix-service",
  "actix-web",
  "chrono",
+ "derive_more",
  "diesel",
  "diesel-derive-enum",
  "diesel_migrations",
