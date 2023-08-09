@@ -18,9 +18,9 @@ diesel::table! {
     use diesel::sql_types::*;
     use super::sql_types::EditType;
 
-    affected_files (affected_file_id) {
+    affected_files (id) {
         #[max_length = 255]
-        affected_file_id -> Varchar,
+        id -> Varchar,
         file_edit_type -> EditType,
         #[max_length = 511]
         file_path -> Varchar,
@@ -33,9 +33,9 @@ diesel::table! {
     use diesel::sql_types::*;
     use super::sql_types::SizeUnit;
 
-    artifacts (artifact_id) {
+    artifacts (id) {
         #[max_length = 255]
-        artifact_id -> Varchar,
+        id -> Varchar,
         #[max_length = 255]
         filename -> Varchar,
         filesize -> Numeric,
@@ -46,9 +46,9 @@ diesel::table! {
 }
 
 diesel::table! {
-    changelogs (changelog_id) {
+    changelogs (id) {
         #[max_length = 255]
-        changelog_id -> Varchar,
+        id -> Varchar,
         #[max_length = 7]
         commit_id -> Bpchar,
         commited_at -> Timestamp,
@@ -65,9 +65,9 @@ diesel::table! {
     use diesel::sql_types::*;
     use super::sql_types::ChannelType;
 
-    releases (release_id) {
+    releases (id) {
         #[max_length = 255]
-        release_id -> Varchar,
+        id -> Varchar,
         channel -> ChannelType,
         #[max_length = 255]
         repo_fullname -> Varchar,

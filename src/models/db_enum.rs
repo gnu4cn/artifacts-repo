@@ -1,6 +1,7 @@
 use diesel_derive_enum::DbEnum;
+use serde::{Deserialize, Serialize};
 
-#[derive(DbEnum, Debug)]
+#[derive(DbEnum, Debug, Deserialize, Serialize)]
 #[ExistingTypePath = "crate::schema::sql_types::ChannelType"]
 pub enum ChannelType {
     Nightly,
@@ -8,7 +9,7 @@ pub enum ChannelType {
     Stable,
 }
 
-#[derive(DbEnum, Debug)]
+#[derive(DbEnum, Debug, Deserialize, Serialize)]
 #[ExistingTypePath = "crate::schema::sql_types::EditType"]
 pub enum EditType {
     Add,
@@ -16,7 +17,7 @@ pub enum EditType {
     Delete,
 }
 
-#[derive(DbEnum, Debug)]
+#[derive(DbEnum, Debug, Deserialize, Serialize)]
 #[ExistingTypePath = "crate::schema::sql_types::SizeUnit"]
 pub enum SizeUnit {
     Kb,

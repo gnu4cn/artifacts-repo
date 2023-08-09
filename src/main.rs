@@ -17,6 +17,7 @@ mod models;
 mod schema;
 mod config;
 mod error;
+mod constants;
 
 
 #[actix_rt::main]
