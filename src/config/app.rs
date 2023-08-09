@@ -18,16 +18,17 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
         .service(ping)
         .service(
             web::resource("/healthchecker").route(web::get().to(health_checker_handler)),
-        ),
-        web::scope("/hello")
-        .service(ping)
-        .service(
-            web::resource("")
-            .route(web::get().to(greet_default)),
         )
         .service(
-            web::resource("/{name}")
-            .route(web::get().to(greet)),
+            web::scope("/hello")
+            .service(
+                web::resource("")
+                .route(web::get().to(greet_default)),
+            )
+            .service(
+                web::resource("/{name}")
+                .route(web::get().to(greet)),
+            ),
         ),
     );
 }

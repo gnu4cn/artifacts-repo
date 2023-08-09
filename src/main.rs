@@ -10,6 +10,7 @@ use actix_web::{
 };
 
 use actix_cors::Cors;
+use futures::FutureExt;
 
 mod api;
 mod models;
@@ -49,7 +50,7 @@ async fn main() -> std::io::Result<()> {
             .wrap_fn(|req, srv| srv.call(req).map(|res| res))
             .configure(config::app::config_services)
     })
-    .bind("0.0.0.0", 20080)?
+    .bind("0.0.0.0:20080")?
         .run()
         .await
 }
