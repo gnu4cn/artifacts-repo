@@ -21,6 +21,8 @@ mod error;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
+    use config::db;
+
     dotenv::dotenv().expect("Failed to read .env file");
 
     if env::var_os("RUST_LOG").is_none() {
@@ -30,8 +32,8 @@ async fn main() -> std::io::Result<()> {
 
     let db_url = env::var("DATABASE_URL").expect("DATABASE_URL not found.");
 
-    let pool = config::db::init_db_pool(&db_url);
-    config::db::run_migration(&mut pool.get().unwrap());
+    let pool = db::init_db_pool(&db_url);
+    db::run_migration(&mut pool.get().unwrap());
 
     HttpServer::new(move || {
         App::new()
