@@ -7,6 +7,7 @@ use crate::{
     config::db::Connection,
     schema::releases::{self, dsl::*},
     models::db_enum::ChannelType,
+    error::ServiceError,
 };
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Insertable)]
@@ -19,7 +20,7 @@ pub struct Release {
 }
 
 impl Release {
-    pub fn publish(new_release: Release, conn: &mut Connection) -> Result<Release, String> {
+    pub fn create(new_release: Release, conn: &mut Connection) -> Result<Release, String> {
         let release = Release {
             id: Uuid::new_v4().to_string(),
             released_at: diesel::select(date(now)).first(conn).unwrap(),
@@ -30,5 +31,9 @@ impl Release {
             .execute(conn)
             .expect("Failes to create new release");
         Ok(release)
+    }
+
+    pub fn find_release_by_date(date: NaiveDate, conn: &mut Connection) -> QueryResult<Release> {
+        releases.filter(released_at.eq(date)).get_result::<Release>(conn)
     }
 }
