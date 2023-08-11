@@ -51,7 +51,7 @@ impl Changelog {
 
     }
 
-    pub fn find_changelog_by_release_id(i: i32, conn: &mut Connection) -> QueryResult<Vec<Changelog>> {
+    pub fn find_changelogs_by_release_id(i: i32, conn: &mut Connection) -> QueryResult<Vec<Changelog>> {
         let rel = releases.filter(releases::id.eq(i))
             .select(Release::as_select())
             .get_result::<Release>(conn)?;
