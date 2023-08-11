@@ -8,11 +8,12 @@ use crate::{
     error::ServiceError,
 };
 
-#[derive(Identifiable, Queryable, Serialize, Deserialize)]
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Selectable)]
+#[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Release {
-    pub id: i64,
+    pub id: i32,
     pub repo_fullname: String,
-    pub diffs_url: String,
+    pub diffs_url: Option<String>,
     pub released_at: NaiveDate,
 }
 
