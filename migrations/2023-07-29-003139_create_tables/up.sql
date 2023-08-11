@@ -10,7 +10,6 @@ CREATE TABLE releases (
 CREATE TABLE changelogs (
     id SERIAL PRIMARY KEY NOT NULL,
     commit_id CHAR(7) NOT NULL,
-    commited_at TIMESTAMP NOT NULL,
     commit_comment VARCHAR(2048) NOT NULL,
     commited_by VARCHAR(255) NOT NULL,
     release_id SERIAL NOT NULL REFERENCES releases(id)

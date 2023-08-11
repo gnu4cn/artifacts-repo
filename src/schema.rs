@@ -26,7 +26,6 @@ diesel::table! {
         id -> Int4,
         #[max_length = 7]
         commit_id -> Bpchar,
-        commited_at -> Timestamp,
         #[max_length = 2048]
         commit_comment -> Varchar,
         #[max_length = 255]
