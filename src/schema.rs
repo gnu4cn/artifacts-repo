@@ -1,54 +1,29 @@
 // @generated automatically by Diesel CLI.
 
-pub mod sql_types {
-    #[derive(diesel::query_builder::QueryId, diesel::sql_types::SqlType)]
-    #[diesel(postgres_type(name = "channel_type"))]
-    pub struct ChannelType;
-
-    #[derive(diesel::query_builder::QueryId, diesel::sql_types::SqlType)]
-    #[diesel(postgres_type(name = "edit_type"))]
-    pub struct EditType;
-
-    #[derive(diesel::query_builder::QueryId, diesel::sql_types::SqlType)]
-    #[diesel(postgres_type(name = "size_unit"))]
-    pub struct SizeUnit;
-}
-
 diesel::table! {
-    use diesel::sql_types::*;
-    use super::sql_types::EditType;
-
     affected_files (id) {
-        #[max_length = 255]
-        id -> Varchar,
-        file_edit_type -> EditType,
+        id -> Int4,
+        #[max_length = 10]
+        file_edit_type -> Varchar,
         #[max_length = 511]
         file_path -> Varchar,
-        #[max_length = 255]
-        release_id -> Varchar,
+        release_id -> Int4,
     }
 }
 
 diesel::table! {
-    use diesel::sql_types::*;
-    use super::sql_types::SizeUnit;
-
     artifacts (id) {
-        #[max_length = 255]
-        id -> Varchar,
+        id -> Int4,
         #[max_length = 255]
         filename -> Varchar,
-        filesize -> Numeric,
-        filesize_unit -> SizeUnit,
-        #[max_length = 255]
-        release_id -> Varchar,
+        filesize -> Int8,
+        release_id -> Int4,
     }
 }
 
 diesel::table! {
     changelogs (id) {
-        #[max_length = 255]
-        id -> Varchar,
+        id -> Int4,
         #[max_length = 7]
         commit_id -> Bpchar,
         commited_at -> Timestamp,
@@ -56,19 +31,13 @@ diesel::table! {
         commit_comment -> Varchar,
         #[max_length = 255]
         commited_by -> Varchar,
-        #[max_length = 255]
-        release_id -> Varchar,
+        release_id -> Int4,
     }
 }
 
 diesel::table! {
-    use diesel::sql_types::*;
-    use super::sql_types::ChannelType;
-
     releases (id) {
-        #[max_length = 255]
-        id -> Varchar,
-        channel -> ChannelType,
+        id -> Int4,
         #[max_length = 255]
         repo_fullname -> Varchar,
         #[max_length = 512]
