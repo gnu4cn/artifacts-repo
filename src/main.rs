@@ -12,6 +12,7 @@ use actix_web::{
 use actix_cors::Cors;
 use futures::FutureExt;
 
+mod lib;
 mod api;
 mod models;
 mod schema;
