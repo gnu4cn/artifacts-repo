@@ -1,9 +1,5 @@
 use diesel::{
     prelude::*,
-    Identifiable,
-    Insertable,
-    Queryable,
-    pg,
 };
 
 use super::release::Release;
