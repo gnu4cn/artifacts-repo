@@ -1,8 +1,6 @@
 use diesel::{
     prelude::*,
     BelongingToDsl,
-    Selectable,
-    pg,
 };
 
 use super::release::Release;
@@ -14,7 +12,7 @@ use crate::{
 
 pub trait Field {
     fn find_by_release_id<T>(i: i32, conn: &mut Connection) -> QueryResult<Vec<T>>
-        where T: for <'a> BelongingToDsl<&'a Release> + Selectable<pg::Pg>
+        where T: for <'a> BelongingToDsl<&'a Release>
     {
         let rel = releases.filter(releases::id.eq(i))
             .select(Release::as_select())
