@@ -19,6 +19,7 @@ mod schema;
 mod config;
 mod error;
 mod constants;
+mod services;
 
 
 #[actix_rt::main]

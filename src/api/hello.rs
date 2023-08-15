@@ -5,6 +5,7 @@ use crate::{
     models::response::GenericResponse,
 };
 
+// GET api/hello/{name}
 pub async fn greet(name: web::Path<String>) -> Result<HttpResponse, ServiceError> {
     let resp_json = &GenericResponse {
         status: "success".to_string(),
@@ -13,6 +14,7 @@ pub async fn greet(name: web::Path<String>) -> Result<HttpResponse, ServiceError
     Ok(HttpResponse::Ok().json(resp_json))
 }
 
+// GET api/hello
 pub async fn greet_default() -> Result<HttpResponse, ServiceError> {
     let resp_json = &GenericResponse {
         status: "success".to_string(),

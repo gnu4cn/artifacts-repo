@@ -8,6 +8,7 @@ use crate::api::{
     },
     health_checker::health_checker_handler,
     ping_controller::ping,
+    release::{save_rel, find_release_by_id},
 };
 
 pub fn config_services(cfg: &mut web::ServiceConfig) {
@@ -28,6 +29,17 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
             .service(
                 web::resource("/{name}")
                 .route(web::get().to(greet)),
+            ),
+        )
+        .service(
+            web::scope("/release")
+            .service(
+                web::resource("/new")
+                .route(web::post().to(save_rel)),
+            )
+            .service(
+                web::resource("/{r_id}")
+                .route(web::get().to(find_release_by_id)),
             ),
         ),
     );
