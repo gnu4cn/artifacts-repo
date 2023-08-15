@@ -1,4 +1,5 @@
 use diesel::{
+    result::Error,
     prelude::*,
     Identifiable,
     Insertable,
@@ -71,7 +72,7 @@ pub struct ReleaseDTO {
 
 impl ReleaseDTO {
     pub fn find_release_by_id(r_id: i32, conn: &mut Connection) -> QueryResult<ReleaseDTO> {
-
+        Err(Error::NotFound)
     }
 }
 

@@ -14,10 +14,7 @@ use crate::{
     error::ServiceError,
 };
 
-use super::{
-    release::Release,
-    field_trait::Field,
-};
+use super::release::Release;
 
 #[derive(Identifiable, Associations, PartialEq, Queryable, Serialize, Deserialize, Selectable)]
 #[diesel(belongs_to(Release))]
@@ -39,8 +36,6 @@ pub struct NewChangelog {
     pub release_id: i32,
 }
 
-impl Field for Changelog {}
-
 impl Changelog {
     pub fn insert(rel: Release, changelog: NewChangelog, conn: &mut Connection) -> QueryResult<Changelog> {
         let new_changelog = NewChangelog {
@@ -54,4 +49,15 @@ impl Changelog {
             .get_result(conn)
 
     }
+
+    pub fn find_changlogs_by_release_id(i: i32, conn: &mut Connection) -> QueryResult<Vec<Changelog>> {
+        let rel = releases.filter(releases::id.eq(i))
+            .select(Release::as_select())
+            .get_result::<Release>(conn)?;
+
+        Changelog::belonging_to(&rel)
+            .select(Changelog::as_select())
+            .load::<Changelog>(conn)
+    }
+
 }
