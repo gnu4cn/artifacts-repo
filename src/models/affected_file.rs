@@ -50,9 +50,7 @@ impl AffectedFile {
     }
 
     pub fn find_affected_files_by_release_id(i: i32, conn: &mut Connection) -> QueryResult<Vec<AffectedFile>> {
-        let rel = releases.filter(releases::id.eq(i))
-            .select(Release::as_select())
-            .get_result::<Release>(conn)?;
+        let rel = Release::find_release_by_id(i, conn).unwrap();
 
         AffectedFile::belonging_to(&rel)
             .select(AffectedFile::as_select())

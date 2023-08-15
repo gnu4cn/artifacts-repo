@@ -50,9 +50,7 @@ impl Artifact {
     }
 
     pub fn find_artifacts_by_release_id(i: i32, conn: &mut Connection) -> QueryResult<Vec<Artifact>> {
-        let rel = releases.filter(releases::id.eq(i))
-            .select(Release::as_select())
-            .get_result::<Release>(conn)?;
+        let rel = Release::find_release_by_id(i, conn).unwrap();
 
         Artifact::belonging_to(&rel)
             .select(Artifact::as_select())
