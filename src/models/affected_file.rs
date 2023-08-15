@@ -36,9 +36,9 @@ pub struct NewAffectedFile {
 
 
 impl AffectedFile {
-    pub fn insert(rel: Release, f: NewAffectedFile, conn: &mut Connection) -> QueryResult<AffectedFile> {
+    pub fn insert(rel_id: i32, f: NewAffectedFile, conn: &mut Connection) -> QueryResult<AffectedFile> {
         let new_affected_file = NewAffectedFile {
-            release_id: rel.id,
+            release_id: rel_id,
             ..f
         };
 

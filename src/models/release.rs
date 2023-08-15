@@ -89,7 +89,29 @@ pub struct ReleaseDTO {
 }
 
 impl ReleaseDTO {
-    pub fn save_release(release: ReleaseDTO, conn: &mut Connection) -> QueryResult<ReleaseDAO> {
-        Err(Error::NotFound)
+    pub fn save_release(rel: ReleaseDTO, conn: &mut Connection) -> QueryResult<ReleaseDAO> {
+        let rel_saved = Release::insert(rel.release, conn).unwrap();
+
+        let mut saved_changelogs: Vec<Changelog> = Vec::new();
+        for c in rel.changelogs {
+            saved_changelogs.push(Changelog::insert(rel_saved.id, c, conn).unwrap());
+        }
+
+        let mut saved_artifacts: Vec<Artifact> = Vec::new();
+        for a in rel.artifacts {
+            saved_artifacts.push(Artifact::insert(rel_saved.id, a, conn).unwrap());
+        }
+
+        let mut saved_affected_files: Vec<AffectedFile> = Vec::new();
+        for a in rel.affected_files {
+            saved_affected_files.push(AffectedFile::insert(rel_saved.id, a, conn).unwrap());
+        }
+
+        Ok(ReleaseDAO{
+            release: rel_saved,
+            changelogs: saved_changelogs,
+            artifacts: saved_artifacts,
+            affected_files: saved_affected_files,
+        })
     }
 }

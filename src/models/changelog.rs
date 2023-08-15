@@ -37,9 +37,9 @@ pub struct NewChangelog {
 }
 
 impl Changelog {
-    pub fn insert(rel: Release, changelog: NewChangelog, conn: &mut Connection) -> QueryResult<Changelog> {
+    pub fn insert(rel_id: i32, changelog: NewChangelog, conn: &mut Connection) -> QueryResult<Changelog> {
         let new_changelog = NewChangelog {
-            release_id: rel.id,
+            release_id: rel_id,
             ..changelog
         };
 

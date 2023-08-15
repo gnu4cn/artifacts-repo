@@ -36,9 +36,9 @@ pub struct NewArtifact {
 
 
 impl Artifact {
-    pub fn insert(rel: Release, a: NewArtifact, conn: &mut Connection) -> QueryResult<Artifact> {
+    pub fn insert(rel_id: i32, a: NewArtifact, conn: &mut Connection) -> QueryResult<Artifact> {
         let new_artifact = NewArtifact {
-            release_id: rel.id,
+            release_id: rel_id,
             ..a
         };
 
