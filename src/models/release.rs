@@ -56,7 +56,7 @@ impl Release {
     }
 
     pub fn find_all(conn: &mut Connection) -> QueryResult<Vec<Release>> {
-        releases.order(id.asc()).load::<Release>(conn)
+        releases.order(id.desc()).load::<Release>(conn)
     }
 }
 
@@ -80,6 +80,24 @@ impl ReleaseDAO {
             }),
             Err(err) => Err(err),
         }
+    }
+
+    pub fn find_all(conn: &mut Connection) -> QueryResult<Vec<ReleaseDAO>> {
+        let mut result: Vec<ReleaseDAO> = Vec::new();
+
+        let release_list = Release::find_all(conn).unwrap();
+
+        for r in release_list {
+            let r_id = r.id;
+            result.push(ReleaseDAO {
+                release: r,
+                changelogs: Changelog::find_changlogs_by_release_id(r_id, conn).unwrap(),
+                artifacts: Artifact::find_artifacts_by_release_id(r_id, conn).unwrap(),
+                affected_files: AffectedFile::find_affected_files_by_release_id(r_id, conn).unwrap(),
+            });
+        }
+
+        Ok(result)
     }
 }
 

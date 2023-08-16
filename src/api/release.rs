@@ -13,7 +13,7 @@ use crate::{
 
 
 // POST api/release/new
-pub async fn save_rel(
+pub async fn save(
     release_dto: web::Json<ReleaseDTO>,
     pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
@@ -24,12 +24,22 @@ pub async fn save_rel(
 }
 
 // GET api/release/{r_id}
-pub async fn find_release_by_id(
+pub async fn find_by_id(
     id: web::Path<i32>,
     pool: web::Data<Pool>
 ) -> Result<HttpResponse, ServiceError> {
     match release_service::find_by_id(id.into_inner(), &pool) {
         Ok(release) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, release))),
+        Err(err) => Err(err),
+    }
+}
+
+// GET api/release/all
+pub async fn find_all(
+    pool: web::Data<Pool>
+) -> Result<HttpResponse, ServiceError> {
+    match release_service::find_all(&pool) {
+        Ok(result) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, result))),
         Err(err) => Err(err),
     }
 }

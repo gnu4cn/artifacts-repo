@@ -26,3 +26,12 @@ pub fn find_by_id(id: i32, pool: &web::Data<Pool>) -> Result<ReleaseDAO, Service
         }),
     }
 }
+
+pub fn find_all(pool: &web::Data<Pool>) -> Result<Vec<ReleaseDAO>, ServiceError> {
+    match ReleaseDAO::find_all(&mut pool.get().unwrap()) {
+        Ok(result) => Ok(result),
+        Err(err) => Err(ServiceError::NotFound {
+            error_message: format! ("No release found"),
+        }),
+    }
+}
