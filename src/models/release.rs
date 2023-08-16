@@ -71,12 +71,15 @@ pub struct ReleaseDAO {
 
 impl ReleaseDAO {
     pub fn find_release_by_id(r_id: i32, conn: &mut Connection) -> QueryResult<ReleaseDAO> {
-        Ok(ReleaseDAO {
-            release: Release::find_release_by_id(r_id, conn).unwrap(),
-            changelogs: Changelog::find_changlogs_by_release_id(r_id, conn).unwrap(),
-            artifacts: Artifact::find_artifacts_by_release_id(r_id, conn).unwrap(),
-            affected_files: AffectedFile::find_affected_files_by_release_id(r_id, conn).unwrap(),
-        })
+        match Release::find_release_by_id(r_id, conn) {
+            Ok(rel) => Ok(ReleaseDAO {
+                release: rel,
+                changelogs: Changelog::find_changlogs_by_release_id(r_id, conn).unwrap(),
+                artifacts: Artifact::find_artifacts_by_release_id(r_id, conn).unwrap(),
+                affected_files: AffectedFile::find_affected_files_by_release_id(r_id, conn).unwrap(),
+            }),
+            Err(err) => Err(err),
+        }
     }
 }
 
