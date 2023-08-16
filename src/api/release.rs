@@ -18,7 +18,7 @@ pub async fn save_rel(
     pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
     match release_service::save(release_dto.0, &pool) {
-        Ok(message: ReleaseDAO) => Ok(HttpResponse::Ok().json(ResponseBody::new(&message, constants::EMPTY))),
+        Ok(release) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, release))),
         Err(err) => Err(err),
     }
 }
@@ -29,7 +29,7 @@ pub async fn find_release_by_id(
     pool: web::Data<Pool>
 ) -> Result<HttpResponse, ServiceError> {
     match release_service::find_by_id(id.into_inner(), &pool) {
-        Ok(release: ReleaseDAO) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, release))),
+        Ok(release) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, release))),
         Err(err) => Err(err),
     }
 }

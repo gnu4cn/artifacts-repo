@@ -2,18 +2,18 @@ use actix_web::{http::header::HeaderValue, web};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-crate::models::{
+use crate::{
     config::db::Pool,
     constants,
     error::ServiceError,
-    release::{ReleaseDAO, ReleaseDTO},
+    models::release::{ReleaseDAO, ReleaseDTO},
 };
 
-pub fn save(rel:: ReleaseDTO, pool: &web::Data<Pool>) -> Result<ReleaseDAO, ServiceError> {
+pub fn save(rel: ReleaseDTO, pool: &web::Data<Pool>) -> Result<ReleaseDAO, ServiceError> {
     match ReleaseDTO::save_release(rel, &mut pool.get().unwrap()) {
         Ok(message) => Ok(message),
         Err(message) => Err(ServiceError::BadRequest {
-            error_message: message,
+            error_message: "Error happened saving the release".to_string(),
         }),
     }
 }
