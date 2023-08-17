@@ -37,8 +37,6 @@ pub struct NewRelease {
     pub diffs_url: Option<String>,
 }
 
-
-
 impl Release {
     pub fn insert(new_release: NewRelease, conn: &mut Connection) -> QueryResult<Release> {
         diesel::insert_into(releases)
@@ -48,15 +46,19 @@ impl Release {
     }
 
     pub fn find_release_by_date(date: NaiveDate, conn: &mut Connection) -> QueryResult<Release> {
-        releases.filter(released_at.eq(&date)).get_result::<Release>(conn)
+        releases.filter(released_at.eq(&date))
+            .get_result::<Release>(conn)
     }
 
     pub fn find_release_by_id(r_id: i32, conn: &mut Connection) -> QueryResult<Release> {
-        releases.filter(id.eq(r_id)).get_result::<Release>(conn)
+        releases.filter(id.eq(r_id))
+            .get_result::<Release>(conn)
     }
 
     pub fn find_all(conn: &mut Connection) -> QueryResult<Vec<Release>> {
-        releases.order(id.desc()).load::<Release>(conn)
+        releases.order(released_at.desc())
+            .order(id.desc())
+            .load::<Release>(conn)
     }
 }
 
@@ -89,6 +91,7 @@ impl ReleaseDAO {
 
         for r in release_list {
             let r_id = r.id;
+
             result.push(ReleaseDAO {
                 release: r,
                 changelogs: Changelog::find_changlogs_by_release_id(r_id, conn).unwrap(),
