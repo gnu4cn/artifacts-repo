@@ -34,7 +34,7 @@ pub struct Release {
 #[diesel(table_name = releases)]
 pub struct NewRelease {
     pub repo_fullname: String,
-    pub diffs_url: String,
+    pub diffs_url: Option<String>,
 }
 
 

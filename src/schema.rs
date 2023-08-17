@@ -15,8 +15,12 @@ diesel::table! {
     artifacts (id) {
         id -> Int4,
         #[max_length = 255]
+        defconfig -> Varchar,
+        #[max_length = 255]
         filename -> Varchar,
         filesize -> Int8,
+        #[max_length = 255]
+        build_log_path -> Nullable<Varchar>,
         release_id -> Int4,
     }
 }

@@ -21,16 +21,20 @@ use super::release::Release;
 #[diesel(check_for_backend(pg::Pg))]
 pub struct Artifact {
     pub id: i32,
+    pub defconfig: String,
     pub filename: String,
     pub filesize: i64,
+    pub build_log_path: Option<String>,
     pub release_id: i32,
 }
 
 #[derive(Serialize, Deserialize, Insertable)]
 #[diesel(table_name = artifacts)]
 pub struct NewArtifact {
+    pub defconfig: String,
     pub filename: String,
     pub filesize: i64,
+    pub build_log_path: Option<String>,
     pub release_id: i32,
 }
 
