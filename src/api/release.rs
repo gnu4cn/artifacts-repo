@@ -37,7 +37,9 @@ pub async fn find_by_id(
 }
 
 // GET api/release/all
-pub async fn find_all(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
+pub async fn find_all(
+    pool: web::Data<Pool>
+) -> Result<HttpResponse, ServiceError> {
     match release_service::find_all(&pool) {
         Ok(result) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, result))),
         Err(err) => Err(err),
@@ -56,9 +58,21 @@ pub async fn find_by_date(
 }
 
 // GET api/repository
-pub async fn find_repositories (pool: web::Data<Pool>) ->
-Result<HttpResponse, ServiceError> {
+pub async fn find_repositories (
+    pool: web::Data<Pool>
+)-> Result<HttpResponse, ServiceError> {
     match release_service::find_repositories(&pool) {
+        Ok(result) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, result))),
+        Err(err) => Err(err),
+    }
+}
+
+// GET api/release/repository/{repo}
+pub async fn find_releases_by_repository (
+    repo: web::Path<String>,
+    pool: web::Data<Pool>,
+) -> Result<HttpResponse, ServiceError> {
+    match release_service::find_releases_by_repository(repo.into_inner(), &pool) {
         Ok(result) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, result))),
         Err(err) => Err(err),
     }

@@ -55,3 +55,12 @@ pub fn find_repositories(pool: &web::Data<Pool>) -> Result<Vec<String>, ServiceE
         }),
     }
 }
+
+pub fn find_releases_by_repository(repo: String, pool: &web::Data<Pool>) -> Result<Vec<ReleaseDAO>, ServiceError> {
+    match ReleaseDAO::find_by_repository(repo, &mut pool.get().unwrap()) {
+        Ok(result) => Ok(result),
+        Err(err) => Err(ServiceError::NotFound {
+            error_message: format! ("No repository found"),
+        }),
+    }
+}

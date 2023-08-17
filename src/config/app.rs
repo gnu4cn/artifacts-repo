@@ -45,6 +45,10 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
                 .route(web::get().to(release::find_all)),
             )
             .service(
+                web::resource("repository/{repo}")
+                .route(web::get().to(release::find_releases_by_repository)),
+                )
+            .service(
                 web::resource("/new")
                 .route(web::post().to(release::save)),
             )

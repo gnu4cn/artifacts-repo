@@ -21,6 +21,8 @@ use super::{
     affected_file::{AffectedFile, NewAffectedFile},
 };
 
+use crate::constants::ORGANIZATION_NAME;
+
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Selectable)]
 #[diesel(check_for_backend(pg::Pg))]
 pub struct Release {
@@ -67,6 +69,13 @@ impl Release {
         releases.select(repo_fullname)
             .distinct()
             .load::<String>(conn)
+    }
+
+    pub fn find_by_repository(repo: String, conn: &mut Connection) -> QueryResult<Vec<Release>> {
+        releases.filter(repo_fullname.eq(format! ("{}/{}", ORGANIZATION_NAME, repo)))
+            .order(released_at.desc())
+            .order(id.desc())
+            .load::<Release>(conn)
     }
 }
 
@@ -117,6 +126,11 @@ impl ReleaseDAO {
 
     pub fn find_releases_by_date(date: NaiveDate, conn: &mut Connection) -> QueryResult<Vec<ReleaseDAO>> {
         let release_list = Release::find_releases_by_date(date, conn).unwrap();
+        Ok(Self::get_dao_list_by_release_list(release_list, conn))
+    }
+
+    pub fn find_by_repository(repo: String, conn: &mut Connection) -> QueryResult<Vec<ReleaseDAO>> {
+        let release_list = Release::find_by_repository(repo, conn).unwrap();
         Ok(Self::get_dao_list_by_release_list(release_list, conn))
     }
 }
