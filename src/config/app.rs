@@ -32,6 +32,13 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
             ),
         )
         .service(
+            web::scope("repository")
+            .service(
+                web::resource("")
+                .route(web::get().to(release::find_repositories)),
+            ),
+        )
+        .service(
             web::scope("/release")
             .service(
                 web::resource("")

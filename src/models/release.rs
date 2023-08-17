@@ -62,6 +62,12 @@ impl Release {
             .order(id.desc())
             .load::<Release>(conn)
     }
+
+    pub fn find_repositories(conn: &mut Connection) -> QueryResult<Vec<String>> {
+        releases.select(repo_fullname)
+            .distinct()
+            .load::<String>(conn)
+    }
 }
 
 
