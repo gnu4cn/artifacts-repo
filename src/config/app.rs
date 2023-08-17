@@ -44,6 +44,10 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
             .service(
                 web::resource("/{r_id}")
                 .route(web::get().to(release::find_by_id)),
+            )
+            .service(
+                web::resource("/date/{date}")
+                .route(web::get().to(release::find_by_date)),
             ),
         ),
     );

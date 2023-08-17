@@ -1,5 +1,7 @@
 use actix_web::{web, HttpRequest, HttpResponse};
 
+use chrono::NaiveDate;
+
 use crate::{
     config::db::Pool,
     constants,
@@ -39,6 +41,17 @@ pub async fn find_all(
     pool: web::Data<Pool>
 ) -> Result<HttpResponse, ServiceError> {
     match release_service::find_all(&pool) {
+        Ok(result) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, result))),
+        Err(err) => Err(err),
+    }
+}
+
+// GET api/release/date/{date}
+pub async fn find_by_date(
+    date: web::Path<NaiveDate>,
+    pool: web::Data<Pool>
+) -> Result<HttpResponse, ServiceError> {
+    match release_service::find_by_date(date.into_inner(), &pool) {
         Ok(result) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, result))),
         Err(err) => Err(err),
     }

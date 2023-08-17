@@ -2,6 +2,8 @@ use actix_web::{http::header::HeaderValue, web};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
+use chrono::NaiveDate;
+
 use crate::{
     config::db::Pool,
     constants,
@@ -29,6 +31,15 @@ pub fn find_by_id(id: i32, pool: &web::Data<Pool>) -> Result<ReleaseDAO, Service
 
 pub fn find_all(pool: &web::Data<Pool>) -> Result<Vec<ReleaseDAO>, ServiceError> {
     match ReleaseDAO::find_all(&mut pool.get().unwrap()) {
+        Ok(result) => Ok(result),
+        Err(err) => Err(ServiceError::NotFound {
+            error_message: format! ("No release found"),
+        }),
+    }
+}
+
+pub fn find_by_date(date: NaiveDate, pool: &web::Data<Pool>) -> Result<Vec<ReleaseDAO>, ServiceError> {
+    match ReleaseDAO::find_releases_by_date(date, &mut pool.get().unwrap()) {
         Ok(result) => Ok(result),
         Err(err) => Err(ServiceError::NotFound {
             error_message: format! ("No release found"),

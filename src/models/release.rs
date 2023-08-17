@@ -45,9 +45,11 @@ impl Release {
             .get_result(conn)
     }
 
-    pub fn find_release_by_date(date: NaiveDate, conn: &mut Connection) -> QueryResult<Release> {
+    pub fn find_releases_by_date(date: NaiveDate, conn: &mut Connection) -> QueryResult<Vec<Release>> {
         releases.filter(released_at.eq(&date))
-            .get_result::<Release>(conn)
+            .order(repo_fullname.asc())
+            .order(id.desc())
+            .load::<Release>(conn)
     }
 
     pub fn find_release_by_id(r_id: i32, conn: &mut Connection) -> QueryResult<Release> {
@@ -84,10 +86,8 @@ impl ReleaseDAO {
         }
     }
 
-    pub fn find_all(conn: &mut Connection) -> QueryResult<Vec<ReleaseDAO>> {
+    fn get_dao_list_by_release_list(release_list: Vec<Release>, conn: &mut Connection) -> Vec<ReleaseDAO> {
         let mut result: Vec<ReleaseDAO> = Vec::new();
-
-        let release_list = Release::find_all(conn).unwrap();
 
         for r in release_list {
             let r_id = r.id;
@@ -100,7 +100,18 @@ impl ReleaseDAO {
             });
         }
 
-        Ok(result)
+        result
+    }
+
+    pub fn find_all(conn: &mut Connection) -> QueryResult<Vec<ReleaseDAO>> {
+        let release_list = Release::find_all(conn).unwrap();
+        Ok(Self::get_dao_list_by_release_list(release_list, conn))
+    }
+
+
+    pub fn find_releases_by_date(date: NaiveDate, conn: &mut Connection) -> QueryResult<Vec<ReleaseDAO>> {
+        let release_list = Release::find_releases_by_date(date, conn).unwrap();
+        Ok(Self::get_dao_list_by_release_list(release_list, conn))
     }
 }
 
