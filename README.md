@@ -26,7 +26,7 @@ cargo run
 ## API list
 
 | Endpoint | HTTP Method | Description |
-| :-- | -- | :-- |
+| :-- | :-: | :-- |
 | `api/release` | GET | List all releases |
 | `api/release/new` | POST | Post a new release |
 | `api/release/{id}` | GET | Get a release with the specific id |
