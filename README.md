@@ -30,4 +30,4 @@ cargo run
 | `api/release` | GET | List all releases |
 | `api/release/new` | POST | Post a new release |
 | `api/release/{id}` | GET | Get a release with the specific id |
-| `api/release/date/{date}` | GET | Get released with the specific date(2023-08-17) |
+| `api/release/date/{date}` | GET | Get released with the specific date(`2023-08-17`) |
