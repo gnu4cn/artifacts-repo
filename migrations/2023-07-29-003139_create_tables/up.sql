@@ -1,7 +1,7 @@
 -- Create table releases;
 CREATE TABLE releases (
     id SERIAL PRIMARY KEY NOT NULL,
-    repo_fullname VARCHAR(255) NOT NULL,
+    repo VARCHAR(255) NOT NULL,
     diffs_url VARCHAR(512),
     released_at DATE NOT NULL DEFAULT CURRENT_DATE
 );

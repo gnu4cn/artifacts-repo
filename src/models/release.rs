@@ -21,13 +21,11 @@ use super::{
     affected_file::{AffectedFile, NewAffectedFile},
 };
 
-use crate::constants::ORGANIZATION_NAME;
-
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Selectable)]
 #[diesel(check_for_backend(pg::Pg))]
 pub struct Release {
     pub id: i32,
-    pub repo_fullname: String,
+    pub repo: String,
     pub diffs_url: Option<String>,
     pub released_at: NaiveDate,
 }
@@ -35,7 +33,7 @@ pub struct Release {
 #[derive(Serialize, Deserialize, Insertable)]
 #[diesel(table_name = releases)]
 pub struct NewRelease {
-    pub repo_fullname: String,
+    pub repo: String,
     pub diffs_url: Option<String>,
 }
 
@@ -49,7 +47,7 @@ impl Release {
 
     pub fn find_releases_by_date(date: NaiveDate, conn: &mut Connection) -> QueryResult<Vec<Release>> {
         releases.filter(released_at.eq(&date))
-            .order(repo_fullname.asc())
+            .order(repo.asc())
             .order(id.desc())
             .load::<Release>(conn)
     }
@@ -66,13 +64,14 @@ impl Release {
     }
 
     pub fn find_repositories(conn: &mut Connection) -> QueryResult<Vec<String>> {
-        releases.select(repo_fullname)
+        releases.select(repo)
+            .order(repo.asc())
             .distinct()
             .load::<String>(conn)
     }
 
-    pub fn find_by_repository(repo: String, conn: &mut Connection) -> QueryResult<Vec<Release>> {
-        releases.filter(repo_fullname.eq(format! ("{}/{}", ORGANIZATION_NAME, repo)))
+    pub fn find_by_repository(r: String, conn: &mut Connection) -> QueryResult<Vec<Release>> {
+        releases.filter(repo.eq(r))
             .order(released_at.desc())
             .order(id.desc())
             .load::<Release>(conn)
@@ -129,8 +128,8 @@ impl ReleaseDAO {
         Ok(Self::get_dao_list_by_release_list(release_list, conn))
     }
 
-    pub fn find_by_repository(repo: String, conn: &mut Connection) -> QueryResult<Vec<ReleaseDAO>> {
-        let release_list = Release::find_by_repository(repo, conn).unwrap();
+    pub fn find_by_repository(r: String, conn: &mut Connection) -> QueryResult<Vec<ReleaseDAO>> {
+        let release_list = Release::find_by_repository(r, conn).unwrap();
         Ok(Self::get_dao_list_by_release_list(release_list, conn))
     }
 }

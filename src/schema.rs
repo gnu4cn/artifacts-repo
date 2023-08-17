@@ -42,7 +42,7 @@ diesel::table! {
     releases (id) {
         id -> Int4,
         #[max_length = 255]
-        repo_fullname -> Varchar,
+        repo -> Varchar,
         #[max_length = 512]
         diffs_url -> Nullable<Varchar>,
         released_at -> Date,
