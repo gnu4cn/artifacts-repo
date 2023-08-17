@@ -19,8 +19,10 @@ CREATE TABLE changelogs (
 -- Create table artifacts;
 CREATE TABLE artifacts (
     id SERIAL PRIMARY KEY NOT NULL,
+    defconfig VARCHAR(255) NOT NULL,
     filename VARCHAR(255) NOT NULL,
     filesize BIGINT NOT NULL,
+    build_log_path VARCHAR(255),
     release_id SERIAL NOT NULL REFERENCES releases(id)
 );
 
