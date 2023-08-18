@@ -10,7 +10,6 @@ use serde::{Deserialize, Serialize};
 use crate::{
     config::db::Connection,
     schema::changelogs::{self, dsl::*},
-    schema::releases::{self, dsl::*},
     error::ServiceError,
 };
 

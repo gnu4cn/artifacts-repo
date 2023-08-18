@@ -9,6 +9,7 @@ use crate::api::{
     health_checker::health_checker_handler,
     ping_controller::ping,
     release,
+    artifact,
 };
 
 pub fn config_services(cfg: &mut web::ServiceConfig) {
@@ -47,7 +48,7 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
             .service(
                 web::resource("repository/{repo}")
                 .route(web::get().to(release::find_releases_by_repository)),
-                )
+            )
             .service(
                 web::resource("/new")
                 .route(web::post().to(release::save)),
@@ -59,6 +60,13 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
             .service(
                 web::resource("/date/{date}")
                 .route(web::get().to(release::find_by_date)),
+            ),
+        )
+        .service(
+            web::scope("/artifact")
+            .service(
+                web::resource("/{a_id}")
+                .route(web::get().to(artifact::find_by_id)),
             ),
         ),
     );

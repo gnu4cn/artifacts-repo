@@ -4,11 +4,11 @@ use chrono::NaiveDate;
 
 use crate::{
     config::db::Pool,
-    constants,
     error::ServiceError,
+    constants,
     models::{
         response::ResponseBody,
-        release::{ReleaseDAO, ReleaseDTO},
+        release::ReleaseDTO,
     },
     services::release_service,
 };

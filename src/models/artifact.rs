@@ -10,11 +10,14 @@ use serde::{Deserialize, Serialize};
 use crate::{
     config::db::Connection,
     schema::artifacts::{self, dsl::*},
-    schema::releases::{self, dsl::*},
     error::ServiceError,
 };
 
-use super::release::Release;
+use super::{
+    release::Release,
+    changelog::Changelog,
+    affected_file::AffectedFile,
+};
 
 #[derive(Identifiable, Associations, PartialEq, Queryable, Serialize, Deserialize, Selectable)]
 #[diesel(belongs_to(Release))]
@@ -39,6 +42,14 @@ pub struct NewArtifact {
 }
 
 
+#[derive(Serialize, Deserialize)]
+pub struct ArtifactDTO {
+    pub artifact: Artifact,
+    pub release: Release,
+    pub changelogs: Vec<Changelog>,
+    pub affected_files: Vec<AffectedFile>,
+}
+
 impl Artifact {
     pub fn insert(rel_id: i32, a: NewArtifact, conn: &mut Connection) -> QueryResult<Artifact> {
         let new_artifact = NewArtifact {
@@ -59,5 +70,22 @@ impl Artifact {
         Artifact::belonging_to(&rel)
             .select(Artifact::as_select())
             .load::<Artifact>(conn)
+    }
+
+    pub fn find_artifact_by_id(a_id: i32, conn: &mut Connection) -> QueryResult<ArtifactDTO> {
+        match artifacts.filter(id.eq(a_id)).get_result::<Artifact>(conn) {
+            Ok(a) => {
+                let r_id = a.release_id;
+                let r = Release::find_release_by_id(r_id, conn).unwrap();
+
+                Ok(ArtifactDTO {
+                    artifact: a,
+                    release: r,
+                    changelogs: Changelog::find_changlogs_by_release_id(r_id, conn).unwrap(),
+                    affected_files: AffectedFile::find_affected_files_by_release_id(r_id, conn).unwrap(),
+                })
+            },
+            Err(err) => Err(err),
+        }
     }
 }
