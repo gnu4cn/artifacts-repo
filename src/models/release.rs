@@ -57,6 +57,14 @@ impl Release {
             .get_result::<Release>(conn)
     }
 
+    pub fn find_by_repo_date(
+        repo: String,
+        date: NaiveDate,
+        conn: &mut Connection
+    ) -> QueryResult<Release> {
+
+    }
+
     pub fn find_all(conn: &mut Connection) -> QueryResult<Vec<Release>> {
         releases.order(released_at.desc())
             .order(id.desc())

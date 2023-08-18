@@ -6,6 +6,7 @@ use diesel::{
     pg,
 };
 use serde::{Deserialize, Serialize};
+use chrono::NaiveDate;
 
 use crate::{
     config::db::Connection,
@@ -41,15 +42,6 @@ pub struct NewArtifact {
     pub release_id: i32,
 }
 
-
-#[derive(Serialize, Deserialize)]
-pub struct ArtifactDTO {
-    pub artifact: Artifact,
-    pub release: Release,
-    pub changelogs: Vec<Changelog>,
-    pub affected_files: Vec<AffectedFile>,
-}
-
 impl Artifact {
     pub fn insert(rel_id: i32, a: NewArtifact, conn: &mut Connection) -> QueryResult<Artifact> {
         let new_artifact = NewArtifact {
@@ -71,7 +63,24 @@ impl Artifact {
             .select(Artifact::as_select())
             .load::<Artifact>(conn)
     }
+}
 
+#[derive(Serialize, Deserialize)]
+pub struct ArtifactDTO {
+    pub artifact: Artifact,
+    pub release: Release,
+    pub changelogs: Vec<Changelog>,
+    pub affected_files: Vec<AffectedFile>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct RepoDateDefconfig {
+    pub repo: String,
+    pub date: NaiveDate,
+    pub defconfig: String,
+}
+
+impl ArtifactDTO {
     pub fn find_artifact_by_id(a_id: i32, conn: &mut Connection) -> QueryResult<ArtifactDTO> {
         match artifacts.filter(id.eq(a_id)).get_result::<Artifact>(conn) {
             Ok(a) => {
@@ -87,5 +96,14 @@ impl Artifact {
             },
             Err(err) => Err(err),
         }
+    }
+
+    pub find_by_repo_date_defconfig(
+        repo: String,
+        date: NaiveDate,
+        defconfig: String,
+        conn: &mut Connection
+    ) -> QueryResult<ArtifactDTO> {
+
     }
 }

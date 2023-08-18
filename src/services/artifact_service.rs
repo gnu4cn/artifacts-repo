@@ -8,11 +8,11 @@ use crate::{
     config::db::Pool,
     constants,
     error::ServiceError,
-    models::artifact::{Artifact, ArtifactDTO},
+    models::artifact::ArtifactDTO,
 };
 
 pub fn find_by_id(a_id: i32, pool: &web::Data<Pool>) -> Result<ArtifactDTO, ServiceError> {
-    match Artifact::find_artifact_by_id(a_id, &mut pool.get().unwrap()) {
+    match ArtifactDTO::find_artifact_by_id(a_id, &mut pool.get().unwrap()) {
         Ok(artifact) => Ok(artifact),
         Err(err) => Err(ServiceError::NotFound {
             error_message: format! ("Artifact with id {} not found", a_id),
