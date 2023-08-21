@@ -36,3 +36,39 @@ cargo run
 | `api/release/repository/{repo}` | GET | List all releases under specific repo. (Where `{repo}` must be url-encoded, e.g. `Senscomm/wise` should be `Senscomm%2Fwise`.)|
 | `api/artifact/{a_id}` | GET | Get a artifact with it's assiociated release, changelogs and affected files info. |
 | `api/artifact` | POST | Get a artifact which has specified repo name, release date and defconfig. POST JSON structure: <code>{"repo": String, "date": chrono::NaiveDate, "defconfig": String}</code> |
+
+
+## `Release` JSON structure
+
+```json
+{
+    "release": {
+        "repo": String,
+        "diffs_url": String
+    },
+    "changelogs": [
+        {
+            "commit_id": String,
+            "commit_comment": String,
+            "commited_by": String,
+            "release_id": i32
+        },
+    ],
+    "artifacts": [
+        {
+            "defconfig": String,
+            "filename": String,
+            "filesize": i32,
+            "build_log_path": String,
+            "release_id": 0
+        },
+    ],
+    "affected_files": [
+        {
+            "file_edit_type": String
+            "file_path": String,
+            "release_id": i32
+        },
+    ]
+}
+```
