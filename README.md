@@ -38,7 +38,7 @@ cargo run
 | `api/artifact` | POST | Get a artifact which has specified repo name, release date and defconfig. POST JSON structure: <code>{"repo": String, "date": chrono::NaiveDate, "defconfig": String}</code> |
 
 
-## `Release` JSON structure
+## `ReleaseDTO` JSON structure
 
 ```json
 {
@@ -72,3 +72,5 @@ cargo run
     ]
 }
 ```
+
+Use this JSON structure to POST a new release.
