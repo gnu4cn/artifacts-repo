@@ -65,6 +65,10 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
         .service(
             web::scope("/artifact")
             .service(
+                web::resource("")
+                .route(web::post().to(artifact::find_artifact_by_repo_date_defconfig)),
+            )
+            .service(
                 web::resource("/{a_id}")
                 .route(web::get().to(artifact::find_by_id)),
             ),

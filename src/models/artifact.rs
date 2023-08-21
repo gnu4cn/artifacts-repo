@@ -98,12 +98,27 @@ impl ArtifactDTO {
         }
     }
 
-    pub find_by_repo_date_defconfig(
-        repo: String,
-        date: NaiveDate,
-        defconfig: String,
+    pub fn find_by_repo_date_defconfig(
+        repo_date_defconfig: &RepoDateDefconfig,
         conn: &mut Connection
     ) -> QueryResult<ArtifactDTO> {
+        let r = &repo_date_defconfig.repo;
+        let d = repo_date_defconfig.date;
+        let def = &repo_date_defconfig.defconfig;
+
+        match Release::find_by_repo_date(r.to_string(), d, conn) {
+            Ok(rel) => {
+                match artifacts
+                    .filter(release_id.eq(rel.id).and(defconfig.eq(def.to_string())))
+                    .get_result::<Artifact>(conn) {
+                    Ok(a) => {
+                        Self::find_artifact_by_id(a.id, conn)
+                    },
+                    Err(err) => Err(err),
+                }
+            },
+            Err(err) => Err(err),
+        }
 
     }
 }

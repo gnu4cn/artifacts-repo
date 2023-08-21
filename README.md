@@ -34,3 +34,4 @@ cargo run
 | `api/repository` | GET | List all `repo` |
 | `api/release/repository/{repo}` | GET | List all releases under specific repo. (Where `{repo}` must be url-encoded, e.g. `Senscomm/wise` should be `Senscomm%2Fwise`.)|
 | `api/artifact/{a_id}` | GET | Get a artifact with it's assiociated release, changelogs and affected files info. |
+| `api/artifact` | POST | Get a artifact which has specified repo name, release date and defconfig. POST JSON structure: <code>{"repo": String, "date": chrono::NaiveDate, "defconfig": String}</code> |

@@ -9,6 +9,7 @@ use crate::{
     models::{
         response::ResponseBody,
         release::ReleaseDTO,
+        artifact::RepoDateDefconfig,
     },
     services::release_service,
 };

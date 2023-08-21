@@ -58,11 +58,12 @@ impl Release {
     }
 
     pub fn find_by_repo_date(
-        repo: String,
-        date: NaiveDate,
+        r: String,
+        d: NaiveDate,
         conn: &mut Connection
     ) -> QueryResult<Release> {
-
+        releases.filter(repo.eq(r).and(released_at.eq(d)))
+            .get_result::<Release>(conn)
     }
 
     pub fn find_all(conn: &mut Connection) -> QueryResult<Vec<Release>> {
