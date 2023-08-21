@@ -8,7 +8,7 @@ use crate::{
     constants,
     models::{
         response::ResponseBody,
-        release::ReleaseDTO,
+        release::{ReleaseDTO, RepoDate},
         artifact::RepoDateDefconfig,
     },
     services::release_service,
@@ -37,7 +37,7 @@ pub async fn find_by_id(
     }
 }
 
-// GET api/release/all
+// GET api/release
 pub async fn find_all(
     pool: web::Data<Pool>
 ) -> Result<HttpResponse, ServiceError> {
@@ -46,6 +46,18 @@ pub async fn find_all(
         Err(err) => Err(err),
     }
 }
+
+// POST api/release
+pub async fn find_by_repo_date(
+    repo_date: web::Json<RepoDate>,
+    pool: web::Data<Pool>
+) -> Result<HttpResponse, ServiceError> {
+    match release_service::find_by_repo_date(repo_date.0, &pool) {
+        Ok(rel) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, rel))),
+        Err(err) => Err(err),
+    }
+}
+
 
 // GET api/release/date/{date}
 pub async fn find_by_date(

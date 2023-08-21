@@ -38,21 +38,30 @@ pub struct NewRelease {
 }
 
 impl Release {
-    pub fn insert(new_release: NewRelease, conn: &mut Connection) -> QueryResult<Release> {
+    pub fn insert(
+        new_release: NewRelease,
+        conn: &mut Connection
+    ) -> QueryResult<Release> {
         diesel::insert_into(releases)
             .values(&new_release)
             .returning(Release::as_returning())
             .get_result(conn)
     }
 
-    pub fn find_releases_by_date(date: NaiveDate, conn: &mut Connection) -> QueryResult<Vec<Release>> {
+    pub fn find_releases_by_date(
+        date: NaiveDate,
+        conn: &mut Connection
+    ) -> QueryResult<Vec<Release>> {
         releases.filter(released_at.eq(&date))
             .order(repo.asc())
             .order(id.desc())
             .load::<Release>(conn)
     }
 
-    pub fn find_release_by_id(r_id: i32, conn: &mut Connection) -> QueryResult<Release> {
+    pub fn find_release_by_id(
+        r_id: i32,
+        conn: &mut Connection
+    ) -> QueryResult<Release> {
         releases.filter(id.eq(r_id))
             .get_result::<Release>(conn)
     }
@@ -79,7 +88,10 @@ impl Release {
             .load::<String>(conn)
     }
 
-    pub fn find_by_repository(r: String, conn: &mut Connection) -> QueryResult<Vec<Release>> {
+    pub fn find_by_repository(
+        r: String,
+        conn: &mut Connection
+    ) -> QueryResult<Vec<Release>> {
         releases.filter(repo.eq(r))
             .order(released_at.desc())
             .order(id.desc())
@@ -96,8 +108,17 @@ pub struct ReleaseDAO {
     pub affected_files: Vec<AffectedFile>,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct RepoDate {
+    pub repo: String,
+    pub date: NaiveDate,
+}
+
 impl ReleaseDAO {
-    pub fn find_release_by_id(r_id: i32, conn: &mut Connection) -> QueryResult<ReleaseDAO> {
+    pub fn find_release_by_id(
+        r_id: i32,
+        conn: &mut Connection
+    ) -> QueryResult<ReleaseDAO> {
         match Release::find_release_by_id(r_id, conn) {
             Ok(rel) => Ok(ReleaseDAO {
                 release: rel,
@@ -109,7 +130,10 @@ impl ReleaseDAO {
         }
     }
 
-    fn get_dao_list_by_release_list(release_list: Vec<Release>, conn: &mut Connection) -> Vec<ReleaseDAO> {
+    fn get_dao_list_by_release_list(
+        release_list: Vec<Release>,
+        conn: &mut Connection
+    ) -> Vec<ReleaseDAO> {
         let mut result: Vec<ReleaseDAO> = Vec::new();
 
         for r in release_list {
@@ -132,14 +156,35 @@ impl ReleaseDAO {
     }
 
 
-    pub fn find_releases_by_date(date: NaiveDate, conn: &mut Connection) -> QueryResult<Vec<ReleaseDAO>> {
+    pub fn find_releases_by_date(
+        date: NaiveDate,
+        conn: &mut Connection
+    ) -> QueryResult<Vec<ReleaseDAO>> {
         let release_list = Release::find_releases_by_date(date, conn).unwrap();
         Ok(Self::get_dao_list_by_release_list(release_list, conn))
     }
 
-    pub fn find_by_repository(r: String, conn: &mut Connection) -> QueryResult<Vec<ReleaseDAO>> {
-        let release_list = Release::find_by_repository(r, conn).unwrap();
+    pub fn find_by_repository(
+        r: &String,
+        conn: &mut Connection
+    ) -> QueryResult<Vec<ReleaseDAO>> {
+        let release_list = Release::find_by_repository(r.to_string(), conn).unwrap();
         Ok(Self::get_dao_list_by_release_list(release_list, conn))
+    }
+
+    pub fn find_by_repo_date (
+        repo_date: &RepoDate,
+        conn: &mut Connection
+    ) -> QueryResult<ReleaseDAO> {
+        let r = &repo_date.repo;
+        let d = repo_date.date;
+
+        match Release::find_by_repo_date(r.to_string(), d, conn) {
+            Ok(r) => {
+                Self::find_release_by_id(r.id, conn)
+            },
+            Err(err) => Err(err),
+        }
     }
 }
 
@@ -152,7 +197,10 @@ pub struct ReleaseDTO {
 }
 
 impl ReleaseDTO {
-    pub fn save_release(rel: ReleaseDTO, conn: &mut Connection) -> QueryResult<ReleaseDAO> {
+    pub fn save_release(
+        rel: ReleaseDTO,
+        conn: &mut Connection
+    ) -> QueryResult<ReleaseDAO> {
         let rel_saved = Release::insert(rel.release, conn).unwrap();
 
         let mut saved_changelogs: Vec<Changelog> = Vec::new();
