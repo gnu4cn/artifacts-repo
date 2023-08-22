@@ -1,0 +1,30 @@
+upstream arti-repo-api { server localhost:20080; }
+
+server {
+	server_name dl.xfoss.com;
+
+	root /opt/lenny.peng/releases;
+
+	location / {
+		autoindex 		on;
+		index 			index.html;
+		sendfile		on;
+		sendfile_max_chunk	1m;
+		tcp_nopush		on;
+		tcp_nodelay		on;
+		keepalive_timeout	65;
+	}
+
+	location /api {
+		proxy_pass http://arti-repo-api;
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection 'upgrade';
+		proxy_set_header Host $host;
+		proxy_cache_bypass $http_upgrade;
+	}
+
+	listen 443 ssl; # managed by Certbot
+	ssl_certificate /etc/ssl/certs/xfoss-com/cert_chain.pem;
+	ssl_certificate_key /etc/ssl/certs/xfoss-com/private.key;
+}

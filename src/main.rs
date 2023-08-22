@@ -55,7 +55,7 @@ async fn main() -> std::io::Result<()> {
             .wrap_fn(|req, srv| srv.call(req).map(|res| res))
             .configure(config::app::config_services)
     })
-    .bind("0.0.0.0:20080")?
+    .bind("127.0.0.1:20080")?
         .run()
         .await
 }
