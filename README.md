@@ -27,15 +27,15 @@ cargo run
 
 | Endpoint | Description | Usage |
 | :-- | :-- | :-- |
-| `api/release` | List all releases. | `curl -X GET -i https://dl.xfoss.com/api/release --noproxy '*'`|
+| `api/release` | List all releases. | `curl -X GET -i https://HOST/api/release --noproxy '*'`|
 | `api/release/new` | Post a new release. | |
-| `api/release/{id}` | Get a release with the specific id. | `curl -X GET -i https://dl.xfoss.com/api/release/1 --noproxy '*'` |
-| `api/release/date/{date}` | Get releases with the specific date. | `curl -X GET -i https://dl.xfoss.com/api/release/date/2023-08-23 --noproxy '*'` |
-| `api/release/repo/date` | Get a release with specified repo name and release date. | `curl -X POST -k -H 'Content-Type: application/json' -i 'https://dl.xfoss.com/api/release/repo/date' --data '{"repo": "wise", "date": "2023-08-23"}' --noproxy '*'` |
-| `api/repository` | List all `repo`. | `curl -X GET -i https://dl.xfoss.com/api/repository --noproxy '*'` |
-| `api/release/repository/{repo}` | List all releases under specific repo. | `curl -X GET -i https://dl.xfoss.com/api/release/repository/wise --noproxy '*'` |
-| `api/artifact/{a_id}` | Get a artifact with it's assiociated release, changelogs and affected files info. | `curl -X GET -i https://dl.xfoss.com/api/artifact/1 --noproxy '*'` |
-| `api/artifact` | Get a artifact which has specified repo name, release date and defconfig. | `curl -X POST -k -H 'Content-Type: application/json' -i 'https://dl.xfoss.com/api/artifact' --data '{"repo": "wise", "date": "2023-08-23", "defconfig": "scm1612bu_defconfig"}' --noproxy '*'` |
+| `api/release/{id}` | Get a release with the specific id. | `curl -X GET -i https://HOST/api/release/1 --noproxy '*'` |
+| `api/release/date/{date}` | Get releases with the specific date. | `curl -X GET -i https://HOST/api/release/date/2023-08-23 --noproxy '*'` |
+| `api/release/repo/date` | Get a release with specified repo name and release date. | `curl -X POST -k -H 'Content-Type: application/json' -i 'https://HOST/api/release/repo/date' --data '{"repo": "wise", "date": "2023-08-23"}' --noproxy '*'` |
+| `api/repository` | List all `repo`. | `curl -X GET -i https://HOST/api/repository --noproxy '*'` |
+| `api/release/repository/{repo}` | List all releases under specific repo. | `curl -X GET -i https://HOST/api/release/repository/wise --noproxy '*'` |
+| `api/artifact/{a_id}` | Get a artifact with it's assiociated release, changelogs and affected files info. | `curl -X GET -i https://HOST/api/artifact/1 --noproxy '*'` |
+| `api/artifact` | Get a artifact which has specified repo name, release date and defconfig. | `curl -X POST -k -H 'Content-Type: application/json' -i 'https://HOST/api/artifact' --data '{"repo": "wise", "date": "2023-08-23", "defconfig": "scm1612bu_defconfig"}' --noproxy '*'` |
 
 
 ## `ReleaseDTO` JSON structure
