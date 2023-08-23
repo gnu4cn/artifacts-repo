@@ -27,6 +27,7 @@ pub struct Release {
     pub id: i32,
     pub org: String,
     pub repo: String,
+    pub release_channel: String,
     pub diffs_url: Option<String>,
     pub released_at: NaiveDate,
 }
@@ -36,6 +37,7 @@ pub struct Release {
 pub struct NewRelease {
     pub org: String,
     pub repo: String,
+    pub release_channel: String,
     pub diffs_url: Option<String>,
 }
 

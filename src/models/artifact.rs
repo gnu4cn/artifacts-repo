@@ -28,7 +28,7 @@ pub struct Artifact {
     pub defconfig: String,
     pub url: String,
     pub filesize: i64,
-    pub build_log_path: Option<String>,
+    pub build_log_url: Option<String>,
     pub release_id: i32,
 }
 
@@ -38,7 +38,7 @@ pub struct NewArtifact {
     pub defconfig: String,
     pub url: String,
     pub filesize: i64,
-    pub build_log_path: Option<String>,
+    pub build_log_url: Option<String>,
     pub release_id: i32,
 }
 

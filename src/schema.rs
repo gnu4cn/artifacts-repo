@@ -20,7 +20,7 @@ diesel::table! {
         url -> Varchar,
         filesize -> Int8,
         #[max_length = 255]
-        build_log_path -> Nullable<Varchar>,
+        build_log_url -> Nullable<Varchar>,
         release_id -> Int4,
     }
 }
@@ -45,6 +45,8 @@ diesel::table! {
         org -> Varchar,
         #[max_length = 255]
         repo -> Varchar,
+        #[max_length = 255]
+        release_channel -> Varchar,
         #[max_length = 512]
         diffs_url -> Nullable<Varchar>,
         released_at -> Date,
