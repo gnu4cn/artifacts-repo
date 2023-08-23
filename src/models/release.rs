@@ -25,6 +25,7 @@ use super::{
 #[diesel(check_for_backend(pg::Pg))]
 pub struct Release {
     pub id: i32,
+    pub org: String,
     pub repo: String,
     pub diffs_url: Option<String>,
     pub released_at: NaiveDate,
@@ -33,6 +34,7 @@ pub struct Release {
 #[derive(Serialize, Deserialize, Insertable)]
 #[diesel(table_name = releases)]
 pub struct NewRelease {
+    pub org: String,
     pub repo: String,
     pub diffs_url: Option<String>,
 }

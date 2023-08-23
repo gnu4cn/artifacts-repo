@@ -16,8 +16,8 @@ diesel::table! {
         id -> Int4,
         #[max_length = 255]
         defconfig -> Varchar,
-        #[max_length = 255]
-        filename -> Varchar,
+        #[max_length = 1023]
+        url -> Varchar,
         filesize -> Int8,
         #[max_length = 255]
         build_log_path -> Nullable<Varchar>,
@@ -41,6 +41,8 @@ diesel::table! {
 diesel::table! {
     releases (id) {
         id -> Int4,
+        #[max_length = 255]
+        org -> Varchar,
         #[max_length = 255]
         repo -> Varchar,
         #[max_length = 512]

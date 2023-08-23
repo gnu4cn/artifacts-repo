@@ -26,7 +26,7 @@ use super::{
 pub struct Artifact {
     pub id: i32,
     pub defconfig: String,
-    pub filename: String,
+    pub url: String,
     pub filesize: i64,
     pub build_log_path: Option<String>,
     pub release_id: i32,
@@ -36,7 +36,7 @@ pub struct Artifact {
 #[diesel(table_name = artifacts)]
 pub struct NewArtifact {
     pub defconfig: String,
-    pub filename: String,
+    pub url: String,
     pub filesize: i64,
     pub build_log_path: Option<String>,
     pub release_id: i32,

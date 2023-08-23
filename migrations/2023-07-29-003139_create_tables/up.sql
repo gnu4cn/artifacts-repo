@@ -1,6 +1,7 @@
 -- Create table releases;
 CREATE TABLE releases (
     id SERIAL PRIMARY KEY NOT NULL,
+    org VARCHAR(255) NOT NULL,
     repo VARCHAR(255) NOT NULL,
     diffs_url VARCHAR(512),
     released_at DATE NOT NULL DEFAULT CURRENT_DATE
@@ -20,7 +21,7 @@ CREATE TABLE changelogs (
 CREATE TABLE artifacts (
     id SERIAL PRIMARY KEY NOT NULL,
     defconfig VARCHAR(255) NOT NULL,
-    filename VARCHAR(255) NOT NULL,
+    url VARCHAR(1023) NOT NULL,
     filesize BIGINT NOT NULL,
     build_log_path VARCHAR(255),
     release_id SERIAL NOT NULL REFERENCES releases(id)
