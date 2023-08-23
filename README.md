@@ -53,7 +53,7 @@ cargo run
             "commit_id": String,
             "commit_comment": String,
             "commited_by": String,
-            "release_id": i32
+            "release_id": 0
         }
     ],
     "artifacts": [
@@ -69,7 +69,7 @@ cargo run
         {
             "file_edit_type": String
             "file_path": String,
-            "release_id": i32
+            "release_id": 0
         }
     ]
 }
