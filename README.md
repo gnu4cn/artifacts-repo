@@ -27,15 +27,15 @@ cargo run
 
 | Endpoint | HTTP Method | Description |
 | :-- | :-: | :-- |
-| `api/release` | GET | List all releases |
-| `api/release/new` | POST | Post a new release |
-| `api/release/{id}` | GET | Get a release with the specific id |
-| `api/release/date/{date}` | GET | Get releases with the specific date(`2023-08-17`) |
-| `api/release/repo/date` | POST | Get a release with specified repo name and release date. POST JSON structure: <code>{"repo": String, "date": chrono::NaiveDate}</code> |
-| `api/repository` | GET | List all `repo` |
-| `api/release/repository/{repo}` | GET | List all releases under specific repo. (Where `{repo}` must be url-encoded, e.g. `Senscomm/wise` should be `Senscomm%2Fwise`.)|
-| `api/artifact/{a_id}` | GET | Get a artifact with it's assiociated release, changelogs and affected files info. |
-| `api/artifact` | POST | Get a artifact which has specified repo name, release date and defconfig. POST JSON structure: <code>{"repo": String, "date": chrono::NaiveDate, "defconfig": String}</code> |
+| `api/release` | GET | List all releases. `curl -X GET -i https://dl.senscomm.com/api/release --noproxy '*'`|
+| `api/release/new` | POST | Post a new release. |
+| `api/release/{id}` | GET | Get a release with the specific id. `curl -X GET -i https://dl.senscomm.com/api/release/1 --noproxy '*'` |
+| `api/release/date/{date}` | GET | Get releases with the specific date. `curl -X GET -i https://dl.senscomm.com/api/release/date/2023-08-23 --noproxy '*'` |
+| `api/release/repo/date` | POST | Get a release with specified repo name and release date. `curl -X POST -k -H 'Content-Type: application/json' -i 'https://dl.senscomm.com/api/release/repo/date' --data '{"repo": "wise", "date": "2023-08-23"}' --noproxy '*'` |
+| `api/repository` | GET | List all `repo`. `curl -X GET -i https://dl.senscomm.com/api/repository --noproxy '*'` |
+| `api/release/repository/{repo}` | GET | List all releases under specific repo. `curl -X GET -i https://dl.senscomm.com/api/release/repository/wise --noproxy '*'` |
+| `api/artifact/{a_id}` | GET | Get a artifact with it's assiociated release, changelogs and affected files info. `curl -X GET -i https://dl.senscomm.com/api/artifact/1 --noproxy '*'` |
+| `api/artifact` | POST | Get a artifact which has specified repo name, release date and defconfig. `curl -X POST -k -H 'Content-Type: application/json' -i 'https://dl.senscomm.com/api/artifact' --data '{"repo": "wise", "date": "2023-08-23", "defconfig": "scm1612bu_defconfig"}' --noproxy '*'` |
 
 
 ## `ReleaseDTO` JSON structure
