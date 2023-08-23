@@ -43,7 +43,9 @@ cargo run
 ```json
 {
     "release": {
+        "org": String,
         "repo": String,
+        "release_channel": String,
         "diffs_url": String
     },
     "changelogs": [
@@ -57,9 +59,9 @@ cargo run
     "artifacts": [
         {
             "defconfig": String,
-            "filename": String,
+            "url": String,
             "filesize": i32,
-            "build_log_path": String,
+            "build_log_url": String,
             "release_id": 0
         },
     ],
