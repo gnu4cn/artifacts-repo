@@ -54,7 +54,7 @@ cargo run
             "commit_comment": String,
             "commited_by": String,
             "release_id": i32
-        },
+        }
     ],
     "artifacts": [
         {
@@ -63,14 +63,14 @@ cargo run
             "filesize": i32,
             "build_log_url": String,
             "release_id": 0
-        },
+        }
     ],
     "affected_files": [
         {
             "file_edit_type": String
             "file_path": String,
             "release_id": i32
-        },
+        }
     ]
 }
 ```
