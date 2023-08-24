@@ -1,0 +1,11 @@
+[program:artifacts-repo]
+environment=HOME="/home/lenny.peng",USER="lenny.peng"
+command=/home/lenny.peng/.local/bin/artifacts-repo
+directory=/home/lenny.peng
+user=lenny.peng
+redirect_stderr=true
+stdout_logfile=/home/lenny.peng/.local/log/artifacts-repo.log
+numproces=4
+autostart=true
+autorestart=true
+startsecs=5
