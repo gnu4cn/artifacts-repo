@@ -8,7 +8,7 @@ use crate::{
     config::db::Pool,
     constants,
     error::ServiceError,
-    models::release::{Release, ReleaseDAO, ReleaseDTO, RepoDate},
+    models::release::{Release, Repo, ReleaseDAO, ReleaseDTO, RepoDate},
 };
 
 pub fn save(
@@ -56,7 +56,7 @@ pub fn find_by_date(
     }
 }
 
-pub fn find_repositories(pool: &web::Data<Pool>) -> Result<Vec<String>, ServiceError> {
+pub fn find_repositories(pool: &web::Data<Pool>) -> Result<Vec<Repo>, ServiceError> {
     match Release::find_repositories(&mut pool.get().unwrap()) {
         Ok(result) => Ok(result),
         Err(err) => Err(ServiceError::NotFound {

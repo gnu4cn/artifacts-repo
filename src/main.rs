@@ -43,8 +43,10 @@ async fn main() -> std::io::Result<()> {
             .wrap(
                 Cors::default() // allowed_origin return access-control-allow-origin: * by default
                 .allowed_origin("http://127.0.0.1:20080")
+                .allowed_origin("http://127.0.0.1:4200")
                 .allowed_origin("http://localhost:20080")
-                .allowed_origin("https://download.senscomm.com")
+                .allowed_origin("http://localhost:4200")
+                .allowed_origin("https://dl.senscomm.com")
                 .send_wildcard()
                 .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
                 .allowed_header(http::header::CONTENT_TYPE)
@@ -55,7 +57,7 @@ async fn main() -> std::io::Result<()> {
             .wrap_fn(|req, srv| srv.call(req).map(|res| res))
             .configure(config::app::config_services)
     })
-    .bind("127.0.0.1:20080")?
+    .bind("0.0.0.0:30080")?
         .run()
         .await
 }

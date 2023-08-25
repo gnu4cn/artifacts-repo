@@ -41,6 +41,12 @@ pub struct NewRelease {
     pub diffs_url: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Queryable)]
+pub struct Repo {
+    pub org: String,
+    pub repo: String,
+}
+
 impl Release {
     pub fn insert(
         new_release: NewRelease,
@@ -85,18 +91,29 @@ impl Release {
             .load::<Release>(conn)
     }
 
-    pub fn find_repositories(conn: &mut Connection) -> QueryResult<Vec<String>> {
-        releases.select(repo)
+    pub fn find_releases_of_today(conn: &mut Connection) -> QueryResult<Vec<Release>> {
+        let mut releases: Vec<Release> = Vec::new();
+
+        let all_repos: Vec<Repo> = Self::find_repositories(conn).unwrap();
+
+        releases.order(released_at.desc())
+            .order(id.desc())
+            .load::<Release>(conn)
+    }
+
+    pub fn find_repositories(conn: &mut Connection) -> QueryResult<Vec<Repo>> {
+        releases.select((org, repo))
+            .order(org.asc())
             .order(repo.asc())
             .distinct()
-            .load::<String>(conn)
+            .load::<Repo>(conn)
     }
 
     pub fn find_by_repository(
-        r: String,
+        r: Repo,
         conn: &mut Connection
     ) -> QueryResult<Vec<Release>> {
-        releases.filter(repo.eq(r))
+        releases.filter(org.eq(r.org).and(repo.eq(r.repo)))
             .order(released_at.desc())
             .order(id.desc())
             .load::<Release>(conn)
@@ -159,6 +176,10 @@ impl ReleaseDAO {
         Ok(Self::get_dao_list_by_release_list(release_list, conn))
     }
 
+    pub fn find_releases_of_today(conn: &mut Connection) -> QueryResult<Vec<ReleaseDAO>> {
+        let release_list = Release::find_all(conn).unwrap();
+        Ok(Self::get_dao_list_by_release_list(release_list, conn))
+    }
 
     pub fn find_releases_by_date(
         date: NaiveDate,
@@ -169,10 +190,10 @@ impl ReleaseDAO {
     }
 
     pub fn find_by_repository(
-        r: &String,
+        r: Repo,
         conn: &mut Connection
     ) -> QueryResult<Vec<ReleaseDAO>> {
-        let release_list = Release::find_by_repository(r.to_string(), conn).unwrap();
+        let release_list = Release::find_by_repository(r, conn).unwrap();
         Ok(Self::get_dao_list_by_release_list(release_list, conn))
     }
 
