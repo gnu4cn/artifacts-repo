@@ -77,11 +77,13 @@ impl Release {
     }
 
     pub fn find_by_repo_date(
-        r: String,
+        r: Repo,
         d: NaiveDate,
         conn: &mut Connection
     ) -> QueryResult<Release> {
-        releases.filter(repo.eq(r).and(released_at.eq(d)))
+        releases.filter(org.eq(r.org))
+            .filter(repo.eq(r.repo))
+            .filter(released_at.eq(d)))
             .get_result::<Release>(conn)
     }
 
@@ -92,13 +94,19 @@ impl Release {
     }
 
     pub fn find_releases_of_today(conn: &mut Connection) -> QueryResult<Vec<Release>> {
-        let mut releases: Vec<Release> = Vec::new();
+        let mut result: Vec<Release> = Vec::new();
 
         let all_repos: Vec<Repo> = Self::find_repositories(conn).unwrap();
 
-        releases.order(released_at.desc())
-            .order(id.desc())
-            .load::<Release>(conn)
+        for r in all_repos {
+            result.push(releases.filter(org.eq(r.org))
+                .filter(repo.eq(r.repo))
+                .order(id.desc())
+                .first::<Release>(conn)
+            );
+        }
+
+        result
     }
 
     pub fn find_repositories(conn: &mut Connection) -> QueryResult<Vec<Repo>> {
@@ -131,7 +139,7 @@ pub struct ReleaseDAO {
 
 #[derive(Serialize, Deserialize)]
 pub struct RepoDate {
-    pub repo: String,
+    pub repo: Repo,
     pub date: NaiveDate,
 }
 
@@ -204,7 +212,7 @@ impl ReleaseDAO {
         let r = &repo_date.repo;
         let d = repo_date.date;
 
-        match Release::find_by_repo_date(r.to_string(), d, conn) {
+        match Release::find_by_repo_date(r, d, conn) {
             Ok(r) => {
                 Self::find_release_by_id(r.id, conn)
             },
