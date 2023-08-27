@@ -11,7 +11,6 @@ use crate::{
     config::db::Connection,
     schema::affected_files::{self, dsl::*},
     schema::releases::{self, dsl::*},
-    error::ServiceError,
 };
 
 use super::release::Release;

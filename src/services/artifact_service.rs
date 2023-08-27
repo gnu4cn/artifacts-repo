@@ -1,6 +1,5 @@
 use actix_web::web;
 
-
 use crate::{
     config::db::Pool,
     error::ServiceError,
