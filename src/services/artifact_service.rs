@@ -1,12 +1,8 @@
-use actix_web::{http::header::HeaderValue, web};
-use serde::{Deserialize, Serialize};
-use serde_json::json;
+use actix_web::web;
 
-use chrono::NaiveDate;
 
 use crate::{
     config::db::Pool,
-    constants,
     error::ServiceError,
     models::artifact::{ArtifactDTO, RepoDateDefconfig},
 };
@@ -31,8 +27,7 @@ pub fn find_by_repo_date_defconfig(
         Ok(a) => Ok(a),
         Err(err) => Err(
             ServiceError::NotFound {
-                error_message: format! ("Artifact with repo name {}, date {}, and defconfig {} not found",
-                                   repo_date_defconfig.repo, repo_date_defconfig.date, repo_date_defconfig.defconfig),
+                error_message: format! ("Artifact with repo name {:?}, date {}, and defconfig {} not found", repo_date_defconfig.repo, repo_date_defconfig.date, repo_date_defconfig.defconfig),
             }),
     }
 }

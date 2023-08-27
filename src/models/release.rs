@@ -1,5 +1,4 @@
 use diesel::{
-    result::Error,
     prelude::*,
     Identifiable,
     Insertable,
@@ -12,7 +11,6 @@ use chrono::NaiveDate;
 use crate::{
     config::db::Connection,
     schema::releases::{self, dsl::*},
-    error::ServiceError,
 };
 
 use super::{
@@ -41,7 +39,7 @@ pub struct NewRelease {
     pub diffs_url: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Queryable)]
+#[derive(Serialize, Deserialize, Queryable, Debug)]
 pub struct Repo {
     pub org: String,
     pub repo: String,
@@ -77,17 +75,19 @@ impl Release {
     }
 
     pub fn find_by_repo_date(
-        r: Repo,
+        r: &Repo,
         d: NaiveDate,
         conn: &mut Connection
     ) -> QueryResult<Release> {
-        releases.filter(org.eq(r.org))
-            .filter(repo.eq(r.repo))
-            .filter(released_at.eq(d)))
+        releases.filter(org.eq(r.org.to_string()))
+            .filter(repo.eq(r.repo.to_string()))
+            .filter(released_at.eq(d))
             .get_result::<Release>(conn)
     }
 
-    pub fn find_all(conn: &mut Connection) -> QueryResult<Vec<Release>> {
+    pub fn find_all(
+        conn: &mut Connection
+    ) -> QueryResult<Vec<Release>> {
         releases.order(released_at.desc())
             .order(id.desc())
             .load::<Release>(conn)
@@ -99,14 +99,16 @@ impl Release {
         let all_repos: Vec<Repo> = Self::find_repositories(conn).unwrap();
 
         for r in all_repos {
-            result.push(releases.filter(org.eq(r.org))
+            match releases.filter(org.eq(r.org))
                 .filter(repo.eq(r.repo))
                 .order(id.desc())
-                .first::<Release>(conn)
-            );
+                .first(conn) {
+                    Ok(rel) => result.push(rel),
+                    Err(err) => {},
+                }
         }
 
-        result
+        Ok(result)
     }
 
     pub fn find_repositories(conn: &mut Connection) -> QueryResult<Vec<Repo>> {
@@ -118,10 +120,12 @@ impl Release {
     }
 
     pub fn find_by_repository(
-        r: Repo,
+        r: &Repo,
         conn: &mut Connection
     ) -> QueryResult<Vec<Release>> {
-        releases.filter(org.eq(r.org).and(repo.eq(r.repo)))
+        releases.filter(
+            org.eq(r.org.to_string())
+            .and(repo.eq(r.repo.to_string())))
             .order(released_at.desc())
             .order(id.desc())
             .load::<Release>(conn)
@@ -137,7 +141,7 @@ pub struct ReleaseDAO {
     pub affected_files: Vec<AffectedFile>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct RepoDate {
     pub repo: Repo,
     pub date: NaiveDate,
@@ -198,7 +202,7 @@ impl ReleaseDAO {
     }
 
     pub fn find_by_repository(
-        r: Repo,
+        r: &Repo,
         conn: &mut Connection
     ) -> QueryResult<Vec<ReleaseDAO>> {
         let release_list = Release::find_by_repository(r, conn).unwrap();

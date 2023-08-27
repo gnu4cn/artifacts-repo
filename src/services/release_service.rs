@@ -1,12 +1,9 @@
-use actix_web::{http::header::HeaderValue, web};
-use serde::{Deserialize, Serialize};
-use serde_json::json;
+use actix_web::web;
 
 use chrono::NaiveDate;
 
 use crate::{
     config::db::Pool,
-    constants,
     error::ServiceError,
     models::release::{Release, Repo, ReleaseDAO, ReleaseDTO, RepoDate},
 };
@@ -66,13 +63,13 @@ pub fn find_repositories(pool: &web::Data<Pool>) -> Result<Vec<Repo>, ServiceErr
 }
 
 pub fn find_releases_by_repository(
-    r: String,
+    r: &Repo,
     pool: &web::Data<Pool>
 ) -> Result<Vec<ReleaseDAO>, ServiceError> {
-    match ReleaseDAO::find_by_repository(&r, &mut pool.get().unwrap()) {
+    match ReleaseDAO::find_by_repository(r, &mut pool.get().unwrap()) {
         Ok(result) => Ok(result),
         Err(err) => Err(ServiceError::NotFound {
-            error_message: format! ("No release under repository {} found", &r),
+            error_message: format! ("No release under repository {:?} found", r),
         }),
     }
 }
@@ -87,7 +84,7 @@ pub fn find_by_repo_date(
     match ReleaseDAO::find_by_repo_date(&repo_date, &mut pool.get().unwrap()) {
         Ok(rel) => Ok(rel),
         Err(err) => Err(ServiceError::NotFound {
-            error_message: format! ("No release with repo {} and date {} found.", r, d),
+            error_message: format! ("No release with repo {:?} and date {:?} found.", r, d),
         }),
     }
 }

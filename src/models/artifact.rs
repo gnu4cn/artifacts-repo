@@ -11,11 +11,10 @@ use chrono::NaiveDate;
 use crate::{
     config::db::Connection,
     schema::artifacts::{self, dsl::*},
-    error::ServiceError,
 };
 
 use super::{
-    release::Release,
+    release::{Release, Repo},
     changelog::Changelog,
     affected_file::AffectedFile,
 };
@@ -75,7 +74,7 @@ pub struct ArtifactDTO {
 
 #[derive(Serialize, Deserialize)]
 pub struct RepoDateDefconfig {
-    pub repo: String,
+    pub repo: Repo,
     pub date: NaiveDate,
     pub defconfig: String,
 }
@@ -106,10 +105,11 @@ impl ArtifactDTO {
         let d = repo_date_defconfig.date;
         let def = &repo_date_defconfig.defconfig;
 
-        match Release::find_by_repo_date(r.to_string(), d, conn) {
+        match Release::find_by_repo_date(r, d, conn) {
             Ok(rel) => {
                 match artifacts
-                    .filter(release_id.eq(rel.id).and(defconfig.eq(def.to_string())))
+                    .filter(release_id.eq(rel.id))
+                    .filter(defconfig.eq(def.to_string()))
                     .get_result::<Artifact>(conn) {
                     Ok(a) => {
                         Self::find_artifact_by_id(a.id, conn)
@@ -119,6 +119,5 @@ impl ArtifactDTO {
             },
             Err(err) => Err(err),
         }
-
     }
 }

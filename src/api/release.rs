@@ -8,12 +8,10 @@ use crate::{
     constants,
     models::{
         response::ResponseBody,
-        release::{ReleaseDTO, RepoDate},
-        artifact::RepoDateDefconfig,
+        release::{ReleaseDTO, RepoDate, Repo},
     },
     services::release_service,
 };
-
 
 // POST api/release/new
 pub async fn save(
@@ -80,12 +78,12 @@ pub async fn find_repositories (
     }
 }
 
-// GET api/release/repository/{repo}
+// POST api/repository/release/
 pub async fn find_releases_by_repository (
-    repo: web::Path<String>,
+    repo: web::Json<Repo>,
     pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
-    match release_service::find_releases_by_repository(repo.into_inner(), &pool) {
+    match release_service::find_releases_by_repository(&repo.0, &pool) {
         Ok(result) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, result))),
         Err(err) => Err(err),
     }
