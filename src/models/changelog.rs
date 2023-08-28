@@ -35,7 +35,11 @@ pub struct NewChangelog {
 }
 
 impl Changelog {
-    pub fn insert(rel_id: i32, changelog: NewChangelog, conn: &mut Connection) -> QueryResult<Changelog> {
+    pub fn insert(
+        rel_id: i32,
+        changelog: NewChangelog,
+        conn: &mut Connection
+    ) -> QueryResult<Changelog> {
         let new_changelog = NewChangelog {
             release_id: rel_id,
             ..changelog
@@ -48,12 +52,15 @@ impl Changelog {
 
     }
 
-    pub fn find_changlogs_by_release_id(i: i32, conn: &mut Connection) -> QueryResult<Vec<Changelog>> {
+    pub fn find_changlogs_by_release_id(
+        i: i32,
+        conn: &mut Connection
+    ) -> QueryResult<Vec<Changelog>> {
         let rel = Release::find_release_by_id(i, conn).unwrap();
 
         Changelog::belonging_to(&rel)
             .select(Changelog::as_select())
             .load::<Changelog>(conn)
     }
-
 }
+

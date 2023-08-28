@@ -17,39 +17,39 @@ use super::{
     changelog::{Changelog, NewChangelog},
     artifact::{Artifact, NewArtifact},
     affected_file::{AffectedFile, NewAffectedFile},
+    repository::{Repository, RepositoryDTO},
 };
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Selectable)]
+#[diesel(belongs_to(Repository))]
 #[diesel(check_for_backend(pg::Pg))]
 pub struct Release {
     pub id: i32,
-    pub org: String,
-    pub repo: String,
     pub release_channel: String,
     pub diffs_url: Option<String>,
     pub released_at: NaiveDate,
+    pub repository_id: i32,
 }
 
 #[derive(Serialize, Deserialize, Insertable)]
 #[diesel(table_name = releases)]
 pub struct NewRelease {
-    pub org: String,
-    pub repo: String,
     pub release_channel: String,
     pub diffs_url: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Queryable, Debug)]
-pub struct Repo {
-    pub org: String,
-    pub repo: String,
+    pub repository_id: i32,
 }
 
 impl Release {
     pub fn insert(
-        new_release: NewRelease,
+        repo_id: i32,
+        rel: NewRelease,
         conn: &mut Connection
     ) -> QueryResult<Release> {
+        let new_rel = NewRelease {
+            repository_id: repo_id,
+            ...rel
+        };
+
         diesel::insert_into(releases)
             .values(&new_release)
             .returning(Release::as_returning())
@@ -61,8 +61,7 @@ impl Release {
         conn: &mut Connection
     ) -> QueryResult<Vec<Release>> {
         releases.filter(released_at.eq(&date))
-            .order(repo.asc())
-            .order(id.desc())
+            .order(repository_id.asc())
             .load::<Release>(conn)
     }
 
@@ -75,12 +74,11 @@ impl Release {
     }
 
     pub fn find_by_repo_date(
-        r: &Repo,
+        r: &Repository,
         d: NaiveDate,
         conn: &mut Connection
     ) -> QueryResult<Release> {
-        releases.filter(org.eq(r.org.to_string()))
-            .filter(repo.eq(r.repo.to_string()))
+        releases.filter(repository_id.eq(r.id))
             .filter(released_at.eq(d))
             .get_result::<Release>(conn)
     }
@@ -93,14 +91,15 @@ impl Release {
             .load::<Release>(conn)
     }
 
-    pub fn find_releases_of_today(conn: &mut Connection) -> QueryResult<Vec<Release>> {
+    pub fn find_releases_of_today(
+        conn: &mut Connection
+    ) -> QueryResult<Vec<Release>> {
         let mut result: Vec<Release> = Vec::new();
 
-        let all_repos: Vec<Repo> = Self::find_repositories(conn).unwrap();
+        let all_repos: Vec<Repository> = Repository::find_all(conn).unwrap();
 
         for r in all_repos {
-            match releases.filter(org.eq(r.org))
-                .filter(repo.eq(r.repo))
+            match releases.filter(repository_id.eq(r.id))
                 .order(id.desc())
                 .first(conn) {
                     Ok(rel) => result.push(rel),
@@ -111,40 +110,24 @@ impl Release {
         Ok(result)
     }
 
-    pub fn find_repositories(conn: &mut Connection) -> QueryResult<Vec<Repo>> {
-        releases.select((org, repo))
-            .order(org.asc())
-            .order(repo.asc())
-            .distinct()
-            .load::<Repo>(conn)
-    }
-
     pub fn find_by_repository(
-        r: &Repo,
+        r: &Repository,
         conn: &mut Connection
     ) -> QueryResult<Vec<Release>> {
-        releases.filter(
-            org.eq(r.org.to_string())
-            .and(repo.eq(r.repo.to_string())))
+        releases.filter(repository_id.eq(r.id))
             .order(released_at.desc())
             .order(id.desc())
             .load::<Release>(conn)
     }
 }
 
-
 #[derive(Serialize, Deserialize)]
 pub struct ReleaseDAO {
+    pub repository: Repository,
     pub release: Release,
     pub changelogs: Vec<Changelog>,
     pub artifacts: Vec<Artifact>,
     pub affected_files: Vec<AffectedFile>,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct RepoDate {
-    pub repo: Repo,
-    pub date: NaiveDate,
 }
 
 impl ReleaseDAO {
@@ -227,6 +210,7 @@ impl ReleaseDAO {
 
 #[derive(Serialize, Deserialize)]
 pub struct ReleaseDTO {
+    pub repo: RepositoryDTO,
     pub release: NewRelease,
     pub changelogs: Vec<NewChangelog>,
     pub artifacts: Vec<NewArtifact>,
