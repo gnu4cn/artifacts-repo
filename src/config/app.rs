@@ -10,6 +10,7 @@ use crate::api::{
     ping_controller::ping,
     release,
     artifact,
+    repository,
 };
 
 pub fn config_services(cfg: &mut web::ServiceConfig) {
@@ -36,7 +37,7 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
             web::scope("repository")
             .service(
                 web::resource("")
-                .route(web::get().to(release::find_repositories)),
+                .route(web::get().to(repository::find_repositories)),
             )
             .service(
                 web::resource("/release")

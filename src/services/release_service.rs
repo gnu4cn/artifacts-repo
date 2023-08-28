@@ -4,7 +4,8 @@ use chrono::NaiveDate;
 use crate::{
     config::db::Pool,
     error::ServiceError,
-    models::release::{Release, Repo, ReleaseDAO, ReleaseDTO, RepoDate},
+    models::release::{Release, ReleaseDAO, ReleaseDTO},
+    models::repository::{Repository, RepositoryDTO, RepoDate},
 };
 
 pub fn save(
@@ -31,7 +32,9 @@ pub fn find_by_id(
     }
 }
 
-pub fn find_all(pool: &web::Data<Pool>) -> Result<Vec<ReleaseDAO>, ServiceError> {
+pub fn find_all(
+    pool: &web::Data<Pool>
+) -> Result<Vec<ReleaseDAO>, ServiceError> {
     match ReleaseDAO::find_all(&mut pool.get().unwrap()) {
         Ok(result) => Ok(result),
         Err(err) => Err(ServiceError::NotFound {
@@ -52,17 +55,9 @@ pub fn find_by_date(
     }
 }
 
-pub fn find_repositories(pool: &web::Data<Pool>) -> Result<Vec<Repo>, ServiceError> {
-    match Release::find_repositories(&mut pool.get().unwrap()) {
-        Ok(result) => Ok(result),
-        Err(err) => Err(ServiceError::NotFound {
-            error_message: format! ("No repository found"),
-        }),
-    }
-}
 
 pub fn find_releases_by_repository(
-    r: &Repo,
+    r: &RepositoryDTO,
     pool: &web::Data<Pool>
 ) -> Result<Vec<ReleaseDAO>, ServiceError> {
     match ReleaseDAO::find_by_repository(r, &mut pool.get().unwrap()) {

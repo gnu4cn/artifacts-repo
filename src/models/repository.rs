@@ -6,6 +6,7 @@ use diesel::{
     pg,
 };
 use serde::{Deserialize, Serialize};
+use chrono::NaiveDate;
 
 use crate::{
     config::db::Connection,
@@ -14,6 +15,7 @@ use crate::{
 
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Selectable)]
+#[diesel(table_name = repositories)]
 #[diesel(check_for_backend(pg::Pg))]
 pub struct Repository {
     pub id: i32,
@@ -35,17 +37,16 @@ pub struct RepoDate {
     pub date: NaiveDate,
 }
 
-
 impl Repository {
     pub fn insert(
-        repo: RepositoryDTO,
+        r: RepositoryDTO,
         conn: &mut Connection
     ) -> QueryResult<Repository> {
-        match Self::find_by_dto(repo, conn) {
-            Ok(r) => r,
+        match Self::find_by_dto(&r, conn) {
+            Ok(r) => Ok(r),
             Err(err) => {
                 diesel::insert_into(repositories)
-                    .values(&repo)
+                    .values(&r)
                     .returning(Repository::as_returning())
                     .get_result(conn)
             }
@@ -53,11 +54,11 @@ impl Repository {
     }
 
     pub fn find_by_dto(
-        dto: RepositoryDTO,
+        dto: &RepositoryDTO,
         conn: &mut Connection
     ) -> QueryResult<Repository> {
-        repositories.filter(org.eq(dto.org))
-            .filter(repo.eq(dto.repo))
+        repositories.filter(org.eq(dto.org.to_string()))
+            .filter(repo.eq(dto.repo.to_string()))
             .get_result::<Repository>(conn)
     }
 
@@ -66,12 +67,12 @@ impl Repository {
         conn: &mut Connection
     ) -> QueryResult<Repository> {
         repositories.filter(id.eq(r_id))
-            .get_result::<Release>(conn)
+            .get_result::<Repository>(conn)
     }
 
-    pub fin find_all(
+    pub fn find_all(
         conn: &mut Connection
-    ) -> QueryResult<Repository> {
+    ) -> QueryResult<Vec<Repository>> {
         repositories.order(org.asc())
             .order(repo.asc())
             .load::<Repository>(conn)

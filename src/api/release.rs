@@ -8,7 +8,8 @@ use crate::{
     constants,
     models::{
         response::ResponseBody,
-        release::{ReleaseDTO, RepoDate, Repo},
+        release::ReleaseDTO,
+        repository::{RepoDate, RepositoryDTO},
     },
     services::release_service,
 };
@@ -56,7 +57,6 @@ pub async fn find_by_repo_date(
     }
 }
 
-
 // GET api/release/date/{date}
 pub async fn find_by_date(
     date: web::Path<NaiveDate>,
@@ -68,19 +68,9 @@ pub async fn find_by_date(
     }
 }
 
-// GET api/repository
-pub async fn find_repositories (
-    pool: web::Data<Pool>
-)-> Result<HttpResponse, ServiceError> {
-    match release_service::find_repositories(&pool) {
-        Ok(result) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, result))),
-        Err(err) => Err(err),
-    }
-}
-
 // POST api/repository/release/
 pub async fn find_releases_by_repository (
-    repo: web::Json<Repo>,
+    repo: web::Json<RepositoryDTO>,
     pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
     match release_service::find_releases_by_repository(&repo.0, &pool) {

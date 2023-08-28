@@ -17,7 +17,7 @@ use super::{
     changelog::{Changelog, NewChangelog},
     artifact::{Artifact, NewArtifact},
     affected_file::{AffectedFile, NewAffectedFile},
-    repository::{Repository, RepositoryDTO},
+    repository::{Repository, RepositoryDTO, RepoDate},
 };
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Selectable)]
@@ -47,11 +47,11 @@ impl Release {
     ) -> QueryResult<Release> {
         let new_rel = NewRelease {
             repository_id: repo_id,
-            ...rel
+            ..rel
         };
 
         diesel::insert_into(releases)
-            .values(&new_release)
+            .values(&new_rel)
             .returning(Release::as_returning())
             .get_result(conn)
     }
@@ -74,13 +74,21 @@ impl Release {
     }
 
     pub fn find_by_repo_date(
-        r: &Repository,
+        r: &RepositoryDTO,
         d: NaiveDate,
         conn: &mut Connection
     ) -> QueryResult<Release> {
-        releases.filter(repository_id.eq(r.id))
-            .filter(released_at.eq(d))
-            .get_result::<Release>(conn)
+        match Repository::find_by_dto(r, conn) {
+            Ok(repo) => {
+                match releases.filter(repository_id.eq(repo.id))
+                    .filter(released_at.eq(d))
+                    .get_result::<Release>(conn) {
+                        Ok(rel) => Ok(rel),
+                        Err(err) => Err(err),
+                    }
+            },
+            Err(err) => Err(err),
+        }
     }
 
     pub fn find_all(
@@ -111,13 +119,18 @@ impl Release {
     }
 
     pub fn find_by_repository(
-        r: &Repository,
+        r: &RepositoryDTO,
         conn: &mut Connection
     ) -> QueryResult<Vec<Release>> {
-        releases.filter(repository_id.eq(r.id))
-            .order(released_at.desc())
-            .order(id.desc())
-            .load::<Release>(conn)
+        match Repository::find_by_dto(r, conn) {
+            Ok(repo) => {
+                releases.filter(repository_id.eq(repo.id))
+                    .order(id.desc())
+                    .load::<Release>(conn)
+            },
+            Err(err) => Err(err),
+
+        }
     }
 }
 
@@ -137,6 +150,7 @@ impl ReleaseDAO {
     ) -> QueryResult<ReleaseDAO> {
         match Release::find_release_by_id(r_id, conn) {
             Ok(rel) => Ok(ReleaseDAO {
+                repository: Repository::find_by_id(rel.repository_id, conn).unwrap(),
                 release: rel,
                 changelogs: Changelog::find_changlogs_by_release_id(r_id, conn).unwrap(),
                 artifacts: Artifact::find_artifacts_by_release_id(r_id, conn).unwrap(),
@@ -156,6 +170,7 @@ impl ReleaseDAO {
             let r_id = r.id;
 
             result.push(ReleaseDAO {
+                repository: Repository::find_by_id(r.repository_id, conn).unwrap(),
                 release: r,
                 changelogs: Changelog::find_changlogs_by_release_id(r_id, conn).unwrap(),
                 artifacts: Artifact::find_artifacts_by_release_id(r_id, conn).unwrap(),
@@ -172,7 +187,7 @@ impl ReleaseDAO {
     }
 
     pub fn find_releases_of_today(conn: &mut Connection) -> QueryResult<Vec<ReleaseDAO>> {
-        let release_list = Release::find_all(conn).unwrap();
+        let release_list = Release::find_releases_of_today(conn).unwrap();
         Ok(Self::get_dao_list_by_release_list(release_list, conn))
     }
 
@@ -185,7 +200,7 @@ impl ReleaseDAO {
     }
 
     pub fn find_by_repository(
-        r: &Repo,
+        r: &RepositoryDTO,
         conn: &mut Connection
     ) -> QueryResult<Vec<ReleaseDAO>> {
         let release_list = Release::find_by_repository(r, conn).unwrap();
@@ -222,7 +237,9 @@ impl ReleaseDTO {
         rel: ReleaseDTO,
         conn: &mut Connection
     ) -> QueryResult<ReleaseDAO> {
-        let rel_saved = Release::insert(rel.release, conn).unwrap();
+        let repo_saved = Repository::insert(rel.repo, conn).unwrap();
+
+        let rel_saved = Release::insert(repo_saved.id, rel.release, conn).unwrap();
 
         let mut saved_changelogs: Vec<Changelog> = Vec::new();
         for c in rel.changelogs {
@@ -240,6 +257,7 @@ impl ReleaseDTO {
         }
 
         Ok(ReleaseDAO{
+            repository: repo_saved,
             release: rel_saved,
             changelogs: saved_changelogs,
             artifacts: saved_artifacts,

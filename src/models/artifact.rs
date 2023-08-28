@@ -14,7 +14,8 @@ use crate::{
 };
 
 use super::{
-    release::{Release, Repo},
+    release::Release,
+    repository::{Repository, RepositoryDTO},
     changelog::Changelog,
     affected_file::AffectedFile,
 };
@@ -42,7 +43,11 @@ pub struct NewArtifact {
 }
 
 impl Artifact {
-    pub fn insert(rel_id: i32, a: NewArtifact, conn: &mut Connection) -> QueryResult<Artifact> {
+    pub fn insert(
+        rel_id: i32,
+        a: NewArtifact,
+        conn: &mut Connection
+    ) -> QueryResult<Artifact> {
         let new_artifact = NewArtifact {
             release_id: rel_id,
             ..a
@@ -55,7 +60,10 @@ impl Artifact {
 
     }
 
-    pub fn find_artifacts_by_release_id(i: i32, conn: &mut Connection) -> QueryResult<Vec<Artifact>> {
+    pub fn find_artifacts_by_release_id(
+        i: i32,
+        conn: &mut Connection
+    ) -> QueryResult<Vec<Artifact>> {
         let rel = Release::find_release_by_id(i, conn).unwrap();
 
         Artifact::belonging_to(&rel)
@@ -67,6 +75,7 @@ impl Artifact {
 #[derive(Serialize, Deserialize)]
 pub struct ArtifactDTO {
     pub artifact: Artifact,
+    pub repository: Repository,
     pub release: Release,
     pub changelogs: Vec<Changelog>,
     pub affected_files: Vec<AffectedFile>,
@@ -74,20 +83,24 @@ pub struct ArtifactDTO {
 
 #[derive(Serialize, Deserialize)]
 pub struct RepoDateDefconfig {
-    pub repo: Repo,
+    pub repo: RepositoryDTO,
     pub date: NaiveDate,
     pub defconfig: String,
 }
 
 impl ArtifactDTO {
-    pub fn find_artifact_by_id(a_id: i32, conn: &mut Connection) -> QueryResult<ArtifactDTO> {
+    pub fn find_artifact_by_id(
+        a_id: i32,
+        conn: &mut Connection
+    ) -> QueryResult<ArtifactDTO> {
         match artifacts.filter(id.eq(a_id)).get_result::<Artifact>(conn) {
             Ok(a) => {
-                let r_id = a.release_id;
-                let r = Release::find_release_by_id(r_id, conn).unwrap();
+                let r = Release::find_release_by_id(a.release_id, conn).unwrap();
+                let r_id = r.id;
 
                 Ok(ArtifactDTO {
                     artifact: a,
+                    repository: Repository::find_by_id(r_id, conn).unwrap(),
                     release: r,
                     changelogs: Changelog::find_changlogs_by_release_id(r_id, conn).unwrap(),
                     affected_files: AffectedFile::find_affected_files_by_release_id(r_id, conn).unwrap(),
@@ -111,11 +124,9 @@ impl ArtifactDTO {
                     .filter(release_id.eq(rel.id))
                     .filter(defconfig.eq(def.to_string()))
                     .get_result::<Artifact>(conn) {
-                    Ok(a) => {
-                        Self::find_artifact_by_id(a.id, conn)
-                    },
-                    Err(err) => Err(err),
-                }
+                        Ok(a) => Self::find_artifact_by_id(a.id, conn),
+                        Err(err) => Err(err),
+                    }
             },
             Err(err) => Err(err),
         }
