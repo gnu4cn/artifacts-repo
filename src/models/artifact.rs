@@ -18,38 +18,42 @@ use super::{
     repository::{Repository, RepositoryDTO},
     changelog::Changelog,
     affected_file::AffectedFile,
+    defconfig::{Defconfig, DefconfigDTO},
 };
 
 #[derive(Identifiable, Associations, PartialEq, Queryable, Serialize, Deserialize, Selectable)]
 #[diesel(belongs_to(Release))]
+#[diesel(belongs_to(Defconfig))]
 #[diesel(check_for_backend(pg::Pg))]
 pub struct Artifact {
     pub id: i32,
-    pub defconfig: String,
     pub url: String,
     pub filesize: i64,
     pub build_log_url: Option<String>,
     pub release_id: i32,
+    pub defconfig_id: i32,
 }
 
 #[derive(Serialize, Deserialize, Insertable)]
 #[diesel(table_name = artifacts)]
 pub struct NewArtifact {
-    pub defconfig: String,
     pub url: String,
     pub filesize: i64,
     pub build_log_url: Option<String>,
     pub release_id: i32,
+    pub defconfig_id: i32,
 }
 
 impl Artifact {
     pub fn insert(
         rel_id: i32,
+        def_id: i32,
         a: NewArtifact,
         conn: &mut Connection
     ) -> QueryResult<Artifact> {
         let new_artifact = NewArtifact {
             release_id: rel_id,
+            defconfig_id: def_id,
             ..a
         };
 
@@ -76,6 +80,7 @@ impl Artifact {
 pub struct ArtifactDTO {
     pub artifact: Artifact,
     pub repository: Repository,
+    pub defconfig: Defconfig,
     pub release: Release,
     pub changelogs: Vec<Changelog>,
     pub affected_files: Vec<AffectedFile>,
@@ -85,7 +90,7 @@ pub struct ArtifactDTO {
 pub struct RepoDateDefconfig {
     pub repo: RepositoryDTO,
     pub date: NaiveDate,
-    pub defconfig: String,
+    pub defconfig: DefconfigDTO,
 }
 
 impl ArtifactDTO {
@@ -101,6 +106,7 @@ impl ArtifactDTO {
                 Ok(ArtifactDTO {
                     artifact: a,
                     repository: Repository::find_by_id(r_id, conn).unwrap(),
+                    defconfig: Defconfig::find_by_id(a.defconfig_id, conn).unwrap(),
                     release: r,
                     changelogs: Changelog::find_changlogs_by_release_id(r_id, conn).unwrap(),
                     affected_files: AffectedFile::find_affected_files_by_release_id(r_id, conn).unwrap(),
@@ -120,13 +126,14 @@ impl ArtifactDTO {
 
         match Release::find_by_repo_date(r, d, conn) {
             Ok(rel) => {
-                match artifacts
-                    .filter(release_id.eq(rel.id))
-                    .filter(defconfig.eq(def.to_string()))
-                    .get_result::<Artifact>(conn) {
-                        Ok(a) => Self::find_artifact_by_id(a.id, conn),
-                        Err(err) => Err(err),
-                    }
+                match Defconfig::find_by_dto(def, conn) {
+                    Ok(def) => {
+                        artifacts.filter(release_id.eq(rel.id))
+                            .filter(defconfig_id.eq(def.id))
+                            .get_result::<ArtifactDTO>(conn)
+                    },
+                    Err(err) => Err(err),
+                }
             },
             Err(err) => Err(err),
         }

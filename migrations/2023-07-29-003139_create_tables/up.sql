@@ -29,16 +29,15 @@ CREATE TABLE defconfigs (
     id SERIAL PRIMARY KEY NOT NULL,
     config VARCHAR(255) NOT NULL,
     repository_id SERIAL NOT NULL REFERENCES repositories(id)
-}
+);
 
 -- Create table artifacts;
 CREATE TABLE artifacts (
     id SERIAL PRIMARY KEY NOT NULL,
-    defconfig VARCHAR(255) NOT NULL,
     url VARCHAR(1023) NOT NULL,
     filesize BIGINT NOT NULL,
     build_log_url VARCHAR(255),
-    release_id SERIAL NOT NULL REFERENCES releases(id)
+    release_id SERIAL NOT NULL REFERENCES releases(id),
     defconfig_id SERIAL NOT NULL REFERENCES defconfigs(id)
 );
 
