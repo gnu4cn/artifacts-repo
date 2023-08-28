@@ -3,3 +3,4 @@ DROP TABLE changelogs;
 DROP TABLE artifacts;
 DROP TABLE affected_files;
 DROP TABLE releases;
+DROP TABLE repositories;

@@ -1,11 +1,17 @@
+-- Create table repositories;
+CREATE TABLE repositories (
+    id SERIAL PRIMARY KEY NOT NULL,
+    org VARCHAR(255) NOT NULL,
+    repo VARCHAR(255) NOT NULL
+);
+
 -- Create table releases;
 CREATE TABLE releases (
     id SERIAL PRIMARY KEY NOT NULL,
-    org VARCHAR(255) NOT NULL,
-    repo VARCHAR(255) NOT NULL,
     release_channel VARCHAR(255) NOT NULL,
     diffs_url VARCHAR(512),
-    released_at DATE NOT NULL DEFAULT CURRENT_DATE
+    released_at DATE NOT NULL DEFAULT CURRENT_DATE,
+    repository_id SERIAL NOT NULL REFERENCES repositories(id)
 );
 
 -- Create table changelogs;
