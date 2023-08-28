@@ -42,11 +42,14 @@ cargo run
 
 ```json
 {
-    "release": {
+    "repo": {
         "org": String,
-        "repo": String,
+        "repo": String
+    },
+    "release":{
         "release_channel": String,
-        "diffs_url": String
+        "diffs_url": String,
+        "repository_id": 0
     },
     "changelogs": [
         {
