@@ -7,6 +7,7 @@ diesel::table! {
         file_edit_type -> Varchar,
         #[max_length = 511]
         file_path -> Varchar,
+        repository_id -> Int4,
         release_id -> Int4,
     }
 }
@@ -19,6 +20,7 @@ diesel::table! {
         filesize -> Int8,
         #[max_length = 255]
         build_log_url -> Nullable<Varchar>,
+        repository_id -> Int4,
         release_id -> Int4,
         defconfig_id -> Int4,
     }
@@ -33,6 +35,7 @@ diesel::table! {
         commit_comment -> Varchar,
         #[max_length = 255]
         commited_by -> Varchar,
+        repository_id -> Int4,
         release_id -> Int4,
     }
 }
@@ -69,9 +72,12 @@ diesel::table! {
 }
 
 diesel::joinable!(affected_files -> releases (release_id));
+diesel::joinable!(affected_files -> repositories (repository_id));
 diesel::joinable!(artifacts -> defconfigs (defconfig_id));
 diesel::joinable!(artifacts -> releases (release_id));
+diesel::joinable!(artifacts -> repositories (repository_id));
 diesel::joinable!(changelogs -> releases (release_id));
+diesel::joinable!(changelogs -> repositories (repository_id));
 diesel::joinable!(defconfigs -> repositories (repository_id));
 diesel::joinable!(releases -> repositories (repository_id));
 

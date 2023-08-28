@@ -22,6 +22,7 @@ use super::{
 };
 
 #[derive(Identifiable, Associations, PartialEq, Queryable, Serialize, Deserialize, Selectable)]
+#[diesel(belongs_to(Repository))]
 #[diesel(belongs_to(Release))]
 #[diesel(belongs_to(Defconfig))]
 #[diesel(check_for_backend(pg::Pg))]
@@ -30,6 +31,7 @@ pub struct Artifact {
     pub url: String,
     pub filesize: i64,
     pub build_log_url: Option<String>,
+    pub repository_id: i32,
     pub release_id: i32,
     pub defconfig_id: i32,
 }
@@ -40,9 +42,19 @@ pub struct NewArtifact {
     pub url: String,
     pub filesize: i64,
     pub build_log_url: Option<String>,
+    pub repository_id: i32,
     pub release_id: i32,
     pub defconfig_id: i32,
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct NewArtifactDTO {
+    pub defconfig: String,
+    pub url: Option<String>,
+    pub filesize: Option<i64>,
+    pub build_log_url: Option<String>,
+}
+
 
 impl Artifact {
     pub fn insert(
@@ -76,8 +88,9 @@ impl Artifact {
     }
 }
 
+
 #[derive(Serialize, Deserialize)]
-pub struct ArtifactDTO {
+pub struct ArtifactDAO {
     pub artifact: Artifact,
     pub repository: Repository,
     pub defconfig: Defconfig,
@@ -93,17 +106,17 @@ pub struct RepoDateDefconfig {
     pub defconfig: DefconfigDTO,
 }
 
-impl ArtifactDTO {
+impl ArtifactDAO {
     pub fn find_artifact_by_id(
         a_id: i32,
         conn: &mut Connection
-    ) -> QueryResult<ArtifactDTO> {
+    ) -> QueryResult<ArtifactDAO> {
         match artifacts.filter(id.eq(a_id)).get_result::<Artifact>(conn) {
             Ok(a) => {
                 let r = Release::find_release_by_id(a.release_id, conn).unwrap();
                 let r_id = r.id;
 
-                Ok(ArtifactDTO {
+                Ok(ArtifactDAO {
                     artifact: a,
                     repository: Repository::find_by_id(r_id, conn).unwrap(),
                     defconfig: Defconfig::find_by_id(a.defconfig_id, conn).unwrap(),
@@ -119,7 +132,7 @@ impl ArtifactDTO {
     pub fn find_by_repo_date_defconfig(
         repo_date_defconfig: &RepoDateDefconfig,
         conn: &mut Connection
-    ) -> QueryResult<ArtifactDTO> {
+    ) -> QueryResult<ArtifactDAO> {
         let r = &repo_date_defconfig.repo;
         let d = repo_date_defconfig.date;
         let def = &repo_date_defconfig.defconfig;
@@ -128,9 +141,14 @@ impl ArtifactDTO {
             Ok(rel) => {
                 match Defconfig::find_by_dto(def, conn) {
                     Ok(def) => {
-                        artifacts.filter(release_id.eq(rel.id))
+                        match artifacts.filter(release_id.eq(rel.id))
                             .filter(defconfig_id.eq(def.id))
-                            .get_result::<ArtifactDTO>(conn)
+                            .get_result::<Artifact>(conn) {
+                                Ok(a) => {
+                                    Ok(Self::find_artifact_by_id(a.id, conn).unwrap())
+                                },
+                                Err(err) => Err(err),
+                            }
                     },
                     Err(err) => Err(err),
                 }

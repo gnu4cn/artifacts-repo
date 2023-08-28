@@ -39,6 +39,13 @@ pub struct NewRelease {
     pub repository_id: i32,
 }
 
+
+#[derive(Serialize, Deserialize)]
+pub struct NewReleaseDTO {
+    pub release_channel: String,
+    pub diffs_url: Option<String>,
+}
+
 impl Release {
     pub fn insert(
         repo_id: i32,
@@ -181,12 +188,16 @@ impl ReleaseDAO {
         result
     }
 
-    pub fn find_all(conn: &mut Connection) -> QueryResult<Vec<ReleaseDAO>> {
+    pub fn find_all(
+        conn: &mut Connection
+        ) -> QueryResult<Vec<ReleaseDAO>> {
         let release_list = Release::find_all(conn).unwrap();
         Ok(Self::get_dao_list_by_release_list(release_list, conn))
     }
 
-    pub fn find_releases_of_today(conn: &mut Connection) -> QueryResult<Vec<ReleaseDAO>> {
+    pub fn find_releases_of_today(
+        conn: &mut Connection
+        ) -> QueryResult<Vec<ReleaseDAO>> {
         let release_list = Release::find_releases_of_today(conn).unwrap();
         Ok(Self::get_dao_list_by_release_list(release_list, conn))
     }

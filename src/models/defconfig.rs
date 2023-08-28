@@ -41,15 +41,21 @@ impl Defconfig {
         def: NewDefconfig,
         conn: &mut Connection
     ) -> QueryResult<Defconfig> {
-        let new_defconfig = NewDefconfig {
-            repository_id: repo_id,
-            ..def
-        };
+        match defconfigs.filter(config.eq(def.config))
+            .get_result::<Defconfig>(conn) {
+                Ok(d) => Ok(d),
+                Err(err) => {
+                    let new_defconfig = NewDefconfig {
+                        repository_id: repo_id,
+                        ..def
+                    };
 
-        diesel::insert_into(defconfigs)
-            .values(&new_defconfig)
-            .returning(Defconfig::as_returning())
-            .get_result(conn)
+                    diesel::insert_into(defconfigs)
+                        .values(&new_defconfig)
+                        .returning(Defconfig::as_returning())
+                        .get_result(conn)
+                },
+            }
     }
 
     pub fn find_by_id(

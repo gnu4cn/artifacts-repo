@@ -5,6 +5,13 @@ CREATE TABLE repositories (
     repo VARCHAR(255) NOT NULL
 );
 
+-- Create TABLE defconfigs
+CREATE TABLE defconfigs (
+    id SERIAL PRIMARY KEY NOT NULL,
+    config VARCHAR(255) NOT NULL,
+    repository_id SERIAL NOT NULL REFERENCES repositories(id)
+);
+
 -- Create table releases;
 CREATE TABLE releases (
     id SERIAL PRIMARY KEY NOT NULL,
@@ -20,16 +27,10 @@ CREATE TABLE changelogs (
     commit_id CHAR(7) NOT NULL,
     commit_comment VARCHAR(2048) NOT NULL,
     commited_by VARCHAR(255) NOT NULL,
+    repository_id SERIAL NOT NULL REFERENCES repositories(id),
     release_id SERIAL NOT NULL REFERENCES releases(id)
 );
 
-
--- Create TABLE defconfigs
-CREATE TABLE defconfigs (
-    id SERIAL PRIMARY KEY NOT NULL,
-    config VARCHAR(255) NOT NULL,
-    repository_id SERIAL NOT NULL REFERENCES repositories(id)
-);
 
 -- Create table artifacts;
 CREATE TABLE artifacts (
@@ -37,6 +38,7 @@ CREATE TABLE artifacts (
     url VARCHAR(1023) NOT NULL,
     filesize BIGINT NOT NULL,
     build_log_url VARCHAR(255),
+    repository_id SERIAL NOT NULL REFERENCES repositories(id),
     release_id SERIAL NOT NULL REFERENCES releases(id),
     defconfig_id SERIAL NOT NULL REFERENCES defconfigs(id)
 );
@@ -47,5 +49,6 @@ CREATE TABLE affected_files (
     id SERIAL PRIMARY KEY NOT NULL,
     file_edit_type VARCHAR(10) NOT NULL,
     file_path VARCHAR(511) NOT NULL,
+    repository_id SERIAL NOT NULL REFERENCES repositories(id),
     release_id SERIAL NOT NULL REFERENCES releases(id)
 );
