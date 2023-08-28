@@ -1,6 +1,7 @@
 -- This file should undo anything in `up.sql`
-DROP TABLE changelogs;
-DROP TABLE artifacts;
-DROP TABLE affected_files;
-DROP TABLE releases;
-DROP TABLE repositories;
+DROP TABLE IF EXISTS changelogs;
+DROP TABLE IF EXISTS artifacts;
+DROP TABLE IF EXISTS affected_files;
+DROP TABLE IF EXISTS releases;
+DROP TABLE IF EXISTS repositories;
+DROP TABLE IF EXISTS defconfigs;
