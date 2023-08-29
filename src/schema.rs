@@ -21,6 +21,7 @@ diesel::table! {
         filesize -> Int8,
         #[max_length = 255]
         build_log_url -> Nullable<Varchar>,
+        repository_id -> Int4,
         release_id -> Int4,
     }
 }
@@ -62,6 +63,7 @@ diesel::table! {
 
 diesel::joinable!(affected_files -> releases (release_id));
 diesel::joinable!(artifacts -> releases (release_id));
+diesel::joinable!(artifacts -> repositories (repository_id));
 diesel::joinable!(changelogs -> releases (release_id));
 diesel::joinable!(releases -> repositories (repository_id));
 

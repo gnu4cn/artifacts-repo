@@ -248,7 +248,7 @@ impl ReleaseDTO {
 
         let mut saved_artifacts: Vec<Artifact> = Vec::new();
         for a in rel.artifacts {
-            saved_artifacts.push(Artifact::insert(rel_saved.id, a, conn).unwrap());
+            saved_artifacts.push(Artifact::insert(repo_saved.id, rel_saved.id, a, conn).unwrap());
         }
 
         let mut saved_affected_files: Vec<AffectedFile> = Vec::new();

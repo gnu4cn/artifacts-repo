@@ -47,7 +47,7 @@ pub struct NewArtifact {
 
 impl Artifact {
     pub fn insert(
-        repo_id, i32,
+        repo_id: i32,
         rel_id: i32,
         a: NewArtifact,
         conn: &mut Connection
