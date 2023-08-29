@@ -66,6 +66,7 @@ cargo run
             "url": String,
             "filesize": i32,
             "build_log_url": String,
+            "repository_id": 0,
             "release_id": 0
         }
     ],
