@@ -33,11 +33,6 @@ pub struct NewAffectedFile {
     pub release_id: i32,
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct NewAffectedFileDTO {
-    pub file_edit_type: String,
-    pub file_path: String,
-}
 
 impl AffectedFile {
     pub fn insert(rel_id: i32, f: NewAffectedFile, conn: &mut Connection) -> QueryResult<AffectedFile> {

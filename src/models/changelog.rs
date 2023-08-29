@@ -34,13 +34,6 @@ pub struct NewChangelog {
     pub release_id: i32,
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct NewChangelogDTO {
-    pub commit_id: String,
-    pub commit_comment: String,
-    pub commited_by: String,
-}
-
 impl Changelog {
     pub fn insert(
         rel_id: i32,
