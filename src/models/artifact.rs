@@ -21,6 +21,7 @@ use super::{
 };
 
 #[derive(Identifiable, Associations, PartialEq, Queryable, Serialize, Deserialize, Selectable)]
+#[diesel(belongs_to(Repository))]
 #[diesel(belongs_to(Release))]
 #[diesel(check_for_backend(pg::Pg))]
 pub struct Artifact {
@@ -29,6 +30,7 @@ pub struct Artifact {
     pub url: String,
     pub filesize: i64,
     pub build_log_url: Option<String>,
+    pub repository_id: i32,
     pub release_id: i32,
 }
 
@@ -39,16 +41,19 @@ pub struct NewArtifact {
     pub url: String,
     pub filesize: i64,
     pub build_log_url: Option<String>,
+    pub repository_id: i32,
     pub release_id: i32,
 }
 
 impl Artifact {
     pub fn insert(
+        repo_id, i32,
         rel_id: i32,
         a: NewArtifact,
         conn: &mut Connection
     ) -> QueryResult<Artifact> {
         let new_artifact = NewArtifact {
+            repository_id: repo_id,
             release_id: rel_id,
             ..a
         };
@@ -69,6 +74,16 @@ impl Artifact {
         Artifact::belonging_to(&rel)
             .select(Artifact::as_select())
             .load::<Artifact>(conn)
+    }
+
+    pub fn find_distinct_defconfigs(
+        repo_id: i32,
+        conn: &mut Connection
+    ) -> QueryResult<Vec<String>> {
+        artifacts.filter(repository_id.eq(repo_id))
+            .select(artifacts::defconfig)
+            .distinct()
+            .load::<String>(conn)
     }
 }
 

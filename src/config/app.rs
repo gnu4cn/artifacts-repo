@@ -40,6 +40,10 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
                 .route(web::get().to(repository::find_repositories)),
             )
             .service(
+                web::resource("/defconfig")
+                .route(web::post().to(repository::find_distinct_defconfigs)),
+            )
+            .service(
                 web::resource("/release")
                 .route(web::post().to(release::find_releases_by_repository)),
             ),

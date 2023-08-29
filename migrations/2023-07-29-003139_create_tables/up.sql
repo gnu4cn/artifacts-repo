@@ -31,6 +31,7 @@ CREATE TABLE artifacts (
     url VARCHAR(1023) NOT NULL,
     filesize BIGINT NOT NULL,
     build_log_url VARCHAR(255),
+    repository_id SERIAL NOT NULL REFERENCES repositories(id)
     release_id SERIAL NOT NULL REFERENCES releases(id)
 );
 
