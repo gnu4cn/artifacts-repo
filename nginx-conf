@@ -2,7 +2,7 @@ upstream arti-repo-api { server localhost:20080; }
 
 server {
 	server_name dl.senscomm.com;
-	
+
 	root /opt/lenny.peng/releases;
 
 	location /api {
@@ -19,9 +19,7 @@ server {
 	}
 
 
-
-
 	listen 443 ssl; # managed by Certbot
-	ssl_certificate /etc/ssl/certs/Senscomm/cert_chain.pem;
-	ssl_certificate_key /etc/ssl/certs/Senscomm/private.key;
+	ssl_certificate /etc/ssl/certs/xfoss-com/cert_chain.pem;
+	ssl_certificate_key /etc/ssl/certs/xfoss-com/private.key;
 }
