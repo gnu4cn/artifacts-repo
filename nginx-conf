@@ -1,19 +1,9 @@
 upstream arti-repo-api { server localhost:20080; }
 
 server {
-	server_name dl.xfoss.com;
-
+	server_name dl.senscomm.com;
+	
 	root /opt/lenny.peng/releases;
-
-	location / {
-		autoindex 		on;
-		index 			index.html;
-		sendfile		on;
-		sendfile_max_chunk	1m;
-		tcp_nopush		on;
-		tcp_nodelay		on;
-		keepalive_timeout	65;
-	}
 
 	location /api {
 		proxy_pass http://arti-repo-api;
@@ -24,7 +14,14 @@ server {
 		proxy_cache_bypass $http_upgrade;
 	}
 
+	location / {
+		try_files $uri $uri/ /index.html;
+	}
+
+
+
+
 	listen 443 ssl; # managed by Certbot
-	ssl_certificate /etc/ssl/certs/xfoss-com/cert_chain.pem;
-	ssl_certificate_key /etc/ssl/certs/xfoss-com/private.key;
+	ssl_certificate /etc/ssl/certs/Senscomm/cert_chain.pem;
+	ssl_certificate_key /etc/ssl/certs/Senscomm/private.key;
 }
