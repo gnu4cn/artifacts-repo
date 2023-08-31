@@ -1,7 +1,7 @@
 upstream arti-repo-api { server localhost:20080; }
 
 server {
-	server_name dl.senscomm.com;
+	server_name dl.xfoss.com;
 	root /opt/lenny.peng/releases;
 
 	location /api {
