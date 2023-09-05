@@ -25,18 +25,18 @@ impl<T> ResponseBody<T> {
 pub struct Page<T> {
     pub message: String,
     pub data: Vec<T>,
-    pub page_num: i64,
-    pub page_size: i64,
-    pub total_elements: i64,
+    pub page_num: i32,
+    pub page_size: i32,
+    pub total_elements: i32,
 }
 
 impl<T> Page<T> {
     pub fn new(
         message: &str,
         data: Vec<T>,
-        page_num: i64,
-        page_size: i64,
-        total_elements: i64,
+        page_num: i32,
+        page_size: i32,
+        total_elements: i32,
     ) -> Page<T> {
         Page {
             message: message.to_string(),
