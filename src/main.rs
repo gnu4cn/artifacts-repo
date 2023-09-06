@@ -42,8 +42,8 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(
                 Cors::default() // allowed_origin return access-control-allow-origin: * by default
-                .allowed_origin("http://127.0.0.1:30080")
-                .allowed_origin("http://localhost:30080")
+                .allowed_origin("http://127.0.0.1:20080")
+                .allowed_origin("http://localhost:20080")
                 .allowed_origin("http://127.0.0.1:4200")
                 .allowed_origin("http://localhost:4200")
                 .allowed_origin("https://dl.senscomm.com")
@@ -57,7 +57,7 @@ async fn main() -> std::io::Result<()> {
             .wrap_fn(|req, srv| srv.call(req).map(|res| res))
             .configure(config::app::config_services)
     })
-    .bind("0.0.0.0:30080")?
+    .bind("127.0.0.1:20080")?
         .run()
         .await
 }

@@ -37,6 +37,13 @@ pub struct RepoDate {
     pub date: NaiveDate,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct RepositoryBriefDTO {
+    pub repo: Repository,
+    pub release_channels: Vec<String>,
+    pub defconfigs: Vec<String>,
+}
+
 impl Repository {
     pub fn insert(
         r: RepositoryDTO,
