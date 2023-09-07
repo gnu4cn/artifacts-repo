@@ -31,6 +31,12 @@ pub struct Release {
     pub repository_id: i32,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct ChannelDTO {
+    pub channel: String,
+    pub count: i64,
+}
+
 #[derive(Serialize, Deserialize, Insertable)]
 #[diesel(table_name = releases)]
 pub struct NewRelease {
@@ -131,6 +137,37 @@ impl Release {
             Err(err) => Err(err),
 
         }
+    }
+
+    pub fn find_distinct_release_channels(
+        repo_id: i32,
+        conn: &mut Connection
+    ) -> QueryResult<Vec<String>> {
+        releases.filter(repository_id.eq(repo_id))
+            .select(releases::release_channel)
+            .distinct()
+            .load::<String>(conn)
+    }
+
+    pub fn count_release_by_channel(
+        repo_id: i32,
+        channel: &String,
+        conn: &mut Connection
+    ) -> QueryResult<i64> {
+        releases.filter(repository_id.eq(repo_id))
+            .filter(release_channel.eq(channel.to_string()))
+            .count()
+            .get_result::<i64>(conn)
+    }
+
+    pub fn find_distinct_dates(
+        repo_id: i32,
+        conn: &mut Connection
+    ) -> QueryResult<Vec<NaiveDate>> {
+        releases.filter(repository_id.eq(repo_id))
+            .select(releases::released_at)
+            .distinct()
+            .load::<NaiveDate>(conn)
     }
 }
 

@@ -40,6 +40,14 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
                 .route(web::get().to(repository::find_repositories)),
             )
             .service(
+                web::resource("/brief")
+                .route(web::get().to(repository::find_all_repo_brief)),
+            )
+            .service(
+                web::resource("/brief/{repo_id}")
+                .route(web::get().to(repository::find_repo_brief_by_id)),
+            )
+            .service(
                 web::resource("/defconfig")
                 .route(web::post().to(repository::find_distinct_defconfigs)),
             )

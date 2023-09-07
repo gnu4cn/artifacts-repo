@@ -34,6 +34,12 @@ pub struct Artifact {
     pub release_id: i32,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct DefconfigDTO {
+    pub defconfig: String,
+    pub count: i64,
+}
+
 #[derive(Serialize, Deserialize, Insertable)]
 #[diesel(table_name = artifacts)]
 pub struct NewArtifact {
@@ -84,6 +90,17 @@ impl Artifact {
             .select(artifacts::defconfig)
             .distinct()
             .load::<String>(conn)
+    }
+
+    pub fn count_artifact_by_defconfig(
+        repo_id: i32,
+        conf: &String,
+        conn: &mut Connection
+    ) -> QueryResult<i64> {
+        artifacts.filter(repository_id.eq(repo_id))
+            .filter(defconfig.eq(conf.to_string()))
+            .count()
+            .get_result::<i64>(conn)
     }
 }
 

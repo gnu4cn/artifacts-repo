@@ -33,6 +33,8 @@ cargo run
 | `api/release/date/{date}` | Get releases with the specific date. | `curl -X GET -i https://HOST/api/release/date/2023-08-23 --noproxy '*'` |
 | `api/release/repo/date` | Get a release with specified repo name and release date. | `curl -X POST -k -H 'Content-Type: application/json' -i 'https://HOST/api/release/repo/date' --data '{"repo":{"org": "Senscomm", "repo": "wise"}, "date": "2023-08-29"}' --noproxy '*'` |
 | `api/repository` | List all `repo`. | `curl -X GET -i https://HOST/api/repository --noproxy '*'` |
+| `api/repository/brief` | List all `repo`'s brief data. | `curl -X GET -k -i 'https://dl.senscomm.com/api/repository/brief' --noproxy '*'` |
+| `api/repository/brief/{repo_id}` | Fetch specific `repo`'s brief data. | `curl -X GET -k -i 'https://dl.senscomm.com/api/repository/brief/1' --noproxy '*'` |
 | `api/repository/release` | List all releases under specific repo. | `curl -X POST -H 'Content-Type: application/json' -i http://HOST/api/repository/release --data '{"org":"Senscomm","repo":"taihu_wise"}' --noproxy '*'` |
 | `api/repository/defconfig` | List all defconfigs under specific repo. | `curl -X POST -H 'Content-Type: application/json' -i http://HOST/api/repository/defconfig --data '{"org":"Senscomm","repo":"wise"}' --noproxy '*'` |
 | `api/artifact/{a_id}` | Get a artifact with it's assiociated release, changelogs and affected files info. | `curl -X GET -i https://HOST/api/artifact/2 --noproxy '*'` |
