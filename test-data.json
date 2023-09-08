@@ -22,7 +22,7 @@
   }],
   "artifacts":[{
     "defconfig":"scm3620_fpga_p5",
-    "url":"https://dl.senscomm.com/Senscomm/taihu_wise/scm3620_fpga_p5.wise-nightly-20230816.tar.gz",
+    "url":"https://dl.xfoss.com/Senscomm/taihu_wise/scm3620_fpga_p5.wise-nightly-20230816.tar.gz",
     "filesize":634232,
     "build_log_path":"",
     "repository_id": 0,
@@ -30,7 +30,7 @@
   },
   {
     "defconfig":"scmTaihu_fpga_dmcu",
-    "url":"https://dl.senscomm.com/Senscomm/taihu_wise/scmTaihu_fpga_dmcu.wise-nightly-20230816.tar.gz",
+    "url":"https://dl.xfoss.com/Senscomm/taihu_wise/scmTaihu_fpga_dmcu.wise-nightly-20230816.tar.gz",
     "filesize":637232,
     "repository_id": 0,
     "release_id":0
