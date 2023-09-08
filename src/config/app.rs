@@ -50,10 +50,6 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
             .service(
                 web::resource("/defconfig")
                 .route(web::post().to(repository::find_distinct_defconfigs)),
-            )
-            .service(
-                web::resource("/release")
-                .route(web::post().to(release::find_releases_by_repository)),
             ),
         )
         .service(
@@ -63,21 +59,28 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
                 .route(web::get().to(release::find_all)),
             )
             .service(
-                web::resource("/repo/date")
-                .route(web::post().to(release::find_by_repo_date)),
-            )
-
-            .service(
                 web::resource("/new")
                 .route(web::post().to(release::save)),
             )
             .service(
-                web::resource("/{r_id}")
-                .route(web::get().to(release::find_by_id)),
+                web::resource("/days")
+                .route(web::get().to(release::find_days_released)),
+            )
+            .service(
+                web::resource("/repository")
+                .route(web::post().to(release::find_releases_by_repository)),
+            )
+            .service(
+                web::resource("/repo/date")
+                .route(web::post().to(release::find_by_repo_date)),
             )
             .service(
                 web::resource("/date/{date}")
                 .route(web::get().to(release::find_by_date)),
+            )
+            .service(
+                web::resource("/{r_id}")
+                .route(web::get().to(release::find_by_id)),
             ),
         )
         .service(

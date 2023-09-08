@@ -68,12 +68,22 @@ pub async fn find_by_date(
     }
 }
 
-// POST api/repository/release/
+// POST api/release/repository
 pub async fn find_releases_by_repository (
     repo: web::Json<RepositoryDTO>,
     pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
     match release_service::find_releases_by_repository(&repo.0, &pool) {
+        Ok(result) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, result))),
+        Err(err) => Err(err),
+    }
+}
+
+// GET api/release/days
+pub async fn find_days_released (
+    pool: web::Data<Pool>,
+) -> Result<HttpResponse, ServiceError> {
+    match release_service::find_days_released(&pool) {
         Ok(result) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, result))),
         Err(err) => Err(err),
     }

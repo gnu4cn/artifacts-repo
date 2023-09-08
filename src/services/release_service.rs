@@ -63,7 +63,7 @@ pub fn find_releases_by_repository(
     match ReleaseDAO::find_by_repository(r, &mut pool.get().unwrap()) {
         Ok(result) => Ok(result),
         Err(err) => Err(ServiceError::NotFound {
-            error_message: format! ("No release under repository {:?} found", r),
+            error_message: format! ("no release under repository {:?} found", r),
         }),
     }
 }
@@ -79,6 +79,17 @@ pub fn find_by_repo_date(
         Ok(rel) => Ok(rel),
         Err(err) => Err(ServiceError::NotFound {
             error_message: format! ("No release with repo {:?} and date {:?} found.", r, d),
+        }),
+    }
+}
+
+pub fn find_days_released(
+    pool: &web::Data<Pool>
+) -> Result<Vec<NaiveDate>, ServiceError> {
+    match Release::find_days_released(&mut pool.get().unwrap()) {
+        Ok(result) => Ok(result),
+        Err(err) => Err(ServiceError::NotFound {
+            error_message: format! ("There is no release available."),
         }),
     }
 }

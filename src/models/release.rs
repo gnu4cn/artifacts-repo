@@ -169,6 +169,15 @@ impl Release {
             .distinct()
             .load::<NaiveDate>(conn)
     }
+
+    pub fn find_days_released(
+        conn: &mut Connection
+    ) -> QueryResult<Vec<NaiveDate>> {
+        releases
+            .select(releases::released_at)
+            .distinct()
+            .load::<NaiveDate>(conn)
+    }
 }
 
 #[derive(Serialize, Deserialize)]
