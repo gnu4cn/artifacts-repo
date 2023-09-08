@@ -2,6 +2,12 @@
 
 This project utilizes the [Diesel ORM](https://diesel.rs) backed by [PostgreSQL](https://www.postgresql.org/), [Actix Web](https://actix.rs) for setting up a backend restful api server, and uses [Angular](https://angular.io) for getting a frontend UI. This project has taken inspiration from [SakaDream/actix-web-rest-api-with-jwt](https://github.com/SakaDream/actix-web-rest-api-with-jwt).
 
+
+## TODO list
+
+- Implement the pagination feature.
+- Add `is_sdk` field in `artifacts` table.
+
 ## Prerequisites
 
 Clone this project to your local machine.
