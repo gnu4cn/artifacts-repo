@@ -106,3 +106,7 @@ Use this JSON structure to POST a new release.
 - Run `vim migrations/2023-09-14-092441_create_tags/up.sql` to edit both the `up.sql` and `down.sql` files, to add or remove any database table.
 
 - Then run `diesel migrate run` to complete the migration.
+
+> Note:
+>
+> When use the diesel-orm migration feat, we should use `pg_dump`'s `-a`, `--only-data` option, to only dump the data. And for `diesel migrate run` command, there is a `--all` option for specifying running all the migrations.
