@@ -127,3 +127,5 @@ Use this JSON structure to POST a new release.
     - `git tag -d TAG_NAME`
 
     - `git push --delete origin TAG_NAME`
+
+- List tags by commit date: `git tag --sort=committerdate`
