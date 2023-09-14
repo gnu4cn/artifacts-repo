@@ -48,6 +48,14 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
                 .route(web::get().to(repository::find_repo_brief_by_id)),
             )
             .service(
+                web::resource("/tagged")
+                .route(web::post().to(repository::find_tagged_releases_by_dto)),
+            )
+            .service(
+                web::resource("/tag/release")
+                .route(web::post().to(repository::find_release_by_repo_tag_dto)),
+            )
+            .service(
                 web::resource("/defconfig")
                 .route(web::post().to(repository::find_distinct_defconfigs)),
             ),
@@ -57,6 +65,10 @@ pub fn config_services(cfg: &mut web::ServiceConfig) {
             .service(
                 web::resource("")
                 .route(web::get().to(release::find_all)),
+            )
+            .service(
+                web::resource("/today")
+                .route(web::get().to(release::find_releases_of_today)),
             )
             .service(
                 web::resource("/new")

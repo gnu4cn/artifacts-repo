@@ -1,4 +1,4 @@
-use std::{env, io, default::Default};
+use std::{env, default::Default};
 
 use actix_web::{
     App,
@@ -44,6 +44,8 @@ async fn main() -> std::io::Result<()> {
                 Cors::default() // allowed_origin return access-control-allow-origin: * by default
                 .allowed_origin("http://127.0.0.1:20080")
                 .allowed_origin("http://localhost:20080")
+                .allowed_origin("http://10.12.10.141:20080")
+                .allowed_origin("http://sw-build-01.senscomm.com:20080")
                 .allowed_origin("http://127.0.0.1:4200")
                 .allowed_origin("http://localhost:4200")
                 .allowed_origin("https://dl.xfoss.com")
@@ -57,7 +59,7 @@ async fn main() -> std::io::Result<()> {
             .wrap_fn(|req, srv| srv.call(req).map(|res| res))
             .configure(config::app::config_services)
     })
-    .bind("127.0.0.1:20080")?
+    .bind("0.0.0.0:20080")?
         .run()
         .await
 }

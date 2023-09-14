@@ -1,4 +1,4 @@
-use actix_web::{web, HttpRequest, HttpResponse};
+use actix_web::{web, HttpResponse};
 
 use crate::{
     error::ServiceError,

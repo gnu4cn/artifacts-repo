@@ -1,8 +1,9 @@
 pub mod pagination;
 pub mod filters;
 
-pub mod release;
 pub mod repository;
+pub mod release;
+pub mod tag;
 pub mod response;
 pub mod changelog;
 pub mod artifact;

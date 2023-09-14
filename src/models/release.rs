@@ -18,6 +18,7 @@ use super::{
     artifact::{Artifact, NewArtifact},
     affected_file::{AffectedFile, NewAffectedFile},
     repository::{Repository, RepositoryDTO, RepoDate},
+    tag::{Tag, NewTag},
 };
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Selectable)]
@@ -86,6 +87,7 @@ impl Release {
     ) -> QueryResult<Release> {
         match Repository::find_by_dto(r, conn) {
             Ok(repo) => {
+
                 match releases.filter(repository_id.eq(repo.id))
                     .filter(released_at.eq(d))
                     .get_result::<Release>(conn) {
@@ -181,9 +183,19 @@ impl Release {
 }
 
 #[derive(Serialize, Deserialize)]
+pub struct TaggedRelease {
+    pub repository: Repository,
+    pub release: Release,
+    pub tag: Tag,
+    pub artifacts: Vec<Artifact>,
+}
+
+
+#[derive(Serialize, Deserialize)]
 pub struct ReleaseDAO {
     pub repository: Repository,
     pub release: Release,
+    pub tag: Option<Tag>,
     pub changelogs: Vec<Changelog>,
     pub artifacts: Vec<Artifact>,
     pub affected_files: Vec<AffectedFile>,
@@ -198,6 +210,7 @@ impl ReleaseDAO {
             Ok(rel) => Ok(ReleaseDAO {
                 repository: Repository::find_by_id(rel.repository_id, conn).unwrap(),
                 release: rel,
+                tag: Tag::find_by_release_id(r_id, conn).unwrap(),
                 changelogs: Changelog::find_changlogs_by_release_id(r_id, conn).unwrap(),
                 artifacts: Artifact::find_artifacts_by_release_id(r_id, conn).unwrap(),
                 affected_files: AffectedFile::find_affected_files_by_release_id(r_id, conn).unwrap(),
@@ -218,6 +231,7 @@ impl ReleaseDAO {
             result.push(ReleaseDAO {
                 repository: Repository::find_by_id(r.repository_id, conn).unwrap(),
                 release: r,
+                tag: Tag::find_by_release_id(r_id, conn).unwrap(),
                 changelogs: Changelog::find_changlogs_by_release_id(r_id, conn).unwrap(),
                 artifacts: Artifact::find_artifacts_by_release_id(r_id, conn).unwrap(),
                 affected_files: AffectedFile::find_affected_files_by_release_id(r_id, conn).unwrap(),
@@ -273,6 +287,7 @@ impl ReleaseDAO {
 pub struct ReleaseDTO {
     pub repo: RepositoryDTO,
     pub release: NewRelease,
+    pub tag: NewTag,
     pub changelogs: Vec<NewChangelog>,
     pub artifacts: Vec<NewArtifact>,
     pub affected_files: Vec<NewAffectedFile>,
@@ -286,6 +301,13 @@ impl ReleaseDTO {
         let repo_saved = Repository::insert(rel.repo, conn).unwrap();
 
         let rel_saved = Release::insert(repo_saved.id, rel.release, conn).unwrap();
+
+        let rel_tag: Option<Tag> = match Tag::find_by_dto(&rel.tag, conn) {
+            Ok(t) => None,
+            Err(err) => {
+                Some(NewTag::save(repo_saved.id, rel_saved.id, rel.tag, conn).unwrap())
+            }
+        };
 
         let mut saved_changelogs: Vec<Changelog> = Vec::new();
         for c in rel.changelogs {
@@ -305,6 +327,7 @@ impl ReleaseDTO {
         Ok(ReleaseDAO{
             repository: repo_saved,
             release: rel_saved,
+            tag: rel_tag,
             changelogs: saved_changelogs,
             artifacts: saved_artifacts,
             affected_files: saved_affected_files,

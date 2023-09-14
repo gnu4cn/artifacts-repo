@@ -21,8 +21,8 @@ diesel::table! {
         filesize -> Int8,
         #[max_length = 255]
         build_log_url -> Nullable<Varchar>,
-        repository_id -> Int4,
         release_id -> Int4,
+        repository_id -> Int4,
     }
 }
 
@@ -61,11 +61,23 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    tags (id) {
+        id -> Int4,
+        #[max_length = 255]
+        name -> Varchar,
+        release_id -> Int4,
+        repository_id -> Int4,
+    }
+}
+
 diesel::joinable!(affected_files -> releases (release_id));
 diesel::joinable!(artifacts -> releases (release_id));
 diesel::joinable!(artifacts -> repositories (repository_id));
 diesel::joinable!(changelogs -> releases (release_id));
 diesel::joinable!(releases -> repositories (repository_id));
+diesel::joinable!(tags -> releases (release_id));
+diesel::joinable!(tags -> repositories (repository_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     affected_files,
@@ -73,4 +85,5 @@ diesel::allow_tables_to_appear_in_same_query!(
     changelogs,
     releases,
     repositories,
+    tags,
 );

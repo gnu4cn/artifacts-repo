@@ -14,8 +14,9 @@ use crate::{
 };
 
 use super::{
-    release::{Release, ChannelDTO},
+    release::{Release, ChannelDTO, ReleaseDAO},
     artifact::{Artifact, DefconfigDTO},
+    tag::Tag,
 };
 
 
@@ -42,11 +43,17 @@ pub struct RepoDate {
     pub date: NaiveDate,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RepoTagDTO {
+    pub repo: RepositoryDTO,
+    pub tag: String,
+}
 
 #[derive(Serialize, Deserialize)]
 pub struct RepositoryBriefDTO {
     pub repo: Repository,
     pub release_channels: Vec<ChannelDTO>,
+    pub tags: Option<Vec<Tag>>,
     pub defconfigs: Vec<DefconfigDTO>,
     pub days: Vec<NaiveDate>,
 }
@@ -62,7 +69,7 @@ impl Repository {
                 diesel::insert_into(repositories)
                     .values(&r)
                     .returning(Repository::as_returning())
-                    .get_result(conn)
+                    .get_result::<Repository>(conn)
             }
         }
     }
@@ -144,39 +151,80 @@ impl Repository {
         Ok(res)
     }
 
-    pub fn find_brief_by_id (
-        repo_id: i32,
+    pub fn find_tagged_releases_by_dto(
+        repo_dto: &RepositoryDTO,
         conn: &mut Connection
-    ) -> QueryResult<RepositoryBriefDTO> {
-        match Self::find_by_id(repo_id, conn) {
+    ) -> QueryResult<Vec<ReleaseDAO>> {
+        match Self::find_by_dto(repo_dto, conn) {
             Ok(r) => {
-                Ok(RepositoryBriefDTO {
-                    repo: r,
-                    release_channels: Self::find_channel_dtos(repo_id, conn).unwrap(),
-                    defconfigs: Self::find_defconfig_dtos(repo_id, conn).unwrap(),
-                    days: Release::find_distinct_dates(repo_id, conn).unwrap(),
-                })
+                let repo_id = r.id;
+
+                let mut res: Vec<ReleaseDAO> = Vec::new();
+                for t in Tag::find_by_repository_id(repo_id, conn).unwrap() {
+                    res.push(ReleaseDAO::find_release_by_id(t.release_id, conn).unwrap());
+                }
+
+                Ok(res)
             },
             Err(err) => Err(err),
         }
     }
 
-    pub fn find_all_repository_brief(
+    pub fn find_release_by_repo_tag_dto(
+        repo_tag_dto: &RepoTagDTO,
+        conn: &mut Connection
+    ) -> QueryResult<ReleaseDAO>{
+        match Self::find_by_dto(&repo_tag_dto.repo, conn) {
+            Ok(r) => {
+                let repo_id = r.id;
+                match Tag::find_by_repo_id_and_name(repo_id, &repo_tag_dto.tag, conn) {
+                    Ok(t) => {
+                        ReleaseDAO::find_release_by_id(t.release_id, conn)
+                    },
+                    Err(err) => Err(err),
+                }
+            },
+            Err(err) => Err(err),
+        }
+    }
+}
+
+impl RepositoryBriefDTO {
+    pub fn find_all(
         conn: &mut Connection
     ) -> QueryResult<Vec<RepositoryBriefDTO>> {
         let mut result: Vec<RepositoryBriefDTO> = Vec::new();
 
-        for r in Self::find_all(conn).unwrap() {
+        for r in Repository::find_all(conn).unwrap() {
             let repo_id = r.id;
 
             result.push(RepositoryBriefDTO {
                 repo: r,
-                release_channels: Self::find_channel_dtos(repo_id, conn).unwrap(),
-                defconfigs: Self::find_defconfig_dtos(repo_id, conn).unwrap(),
+                release_channels: Repository::find_channel_dtos(repo_id, conn).unwrap(),
+                tags: Some(Tag::find_by_repository_id(repo_id, conn).unwrap()),
+                defconfigs: Repository::find_defconfig_dtos(repo_id, conn).unwrap(),
                 days: Release::find_distinct_dates(repo_id, conn).unwrap(),
             });
         }
 
         Ok(result)
+    }
+
+    pub fn find_by_repo_id (
+        repo_id: i32,
+        conn: &mut Connection
+    ) -> QueryResult<RepositoryBriefDTO> {
+        match Repository::find_by_id(repo_id, conn) {
+            Ok(r) => {
+                Ok(RepositoryBriefDTO {
+                    repo: r,
+                    release_channels: Repository::find_channel_dtos(repo_id, conn).unwrap(),
+                    tags: Some(Tag::find_by_repository_id(repo_id, conn).unwrap()),
+                    defconfigs: Repository::find_defconfig_dtos(repo_id, conn).unwrap(),
+                    days: Release::find_distinct_dates(repo_id, conn).unwrap(),
+                })
+            },
+            Err(err) => Err(err),
+        }
     }
 }

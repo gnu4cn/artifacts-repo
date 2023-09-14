@@ -6,7 +6,7 @@ use crate::{
     error::ServiceError,
     models::{
         response::ResponseBody,
-        repository::{RepoDate, Repository, RepositoryDTO},
+        repository::{RepositoryDTO, RepoTagDTO},
     },
     services::repository_service,
 };
@@ -27,6 +27,28 @@ pub async fn find_distinct_defconfigs (
     pool: web::Data<Pool>
 ) -> Result<HttpResponse, ServiceError> {
     match repository_service::find_repository_defconfigs(repo.0, &pool) {
+        Ok(result) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, result))),
+        Err(err) => Err(err),
+    }
+}
+
+// POST api/repository/tagged
+pub async fn find_tagged_releases_by_dto (
+    repo: web::Json<RepositoryDTO>,
+    pool: web::Data<Pool>
+) -> Result<HttpResponse, ServiceError> {
+    match repository_service::find_tagged_releases_by_dto(repo.0, &pool) {
+        Ok(result) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, result))),
+        Err(err) => Err(err),
+    }
+}
+
+// POST api/repository/tag/release
+pub async fn find_release_by_repo_tag_dto (
+    repo_tag: web::Json<RepoTagDTO>,
+    pool: web::Data<Pool>
+) -> Result<HttpResponse, ServiceError> {
+    match repository_service::find_release_by_repo_tag_dto(&repo_tag.0, &pool) {
         Ok(result) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, result))),
         Err(err) => Err(err),
     }

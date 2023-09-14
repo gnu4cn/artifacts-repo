@@ -46,6 +46,16 @@ pub async fn find_all(
     }
 }
 
+// GET api/release/today
+pub async fn find_releases_of_today(
+    pool: web::Data<Pool>
+) -> Result<HttpResponse, ServiceError> {
+    match release_service::find_releases_of_today(&pool) {
+        Ok(result) => Ok(HttpResponse::Ok().json(ResponseBody::new(constants::MESSAGE_OK, result))),
+        Err(err) => Err(err),
+    }
+}
+
 // POST api/release
 pub async fn find_by_repo_date(
     repo_date: web::Json<RepoDate>,
