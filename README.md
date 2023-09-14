@@ -98,3 +98,11 @@ cargo run
 ```
 
 Use this JSON structure to POST a new release.
+
+## How to migrate the database tables
+
+- Run `diesel migrate generate create_tags` command to create migration SQL files under the project's `migrations` directory. The `create_tags` CLI flag is a comment-like command parameter.
+
+- Run `vim migrations/2023-09-14-092441_create_tags/up.sql` to edit both the `up.sql` and `down.sql` files, to add or remove any database table.
+
+- Then run `diesel migrate run` to complete the migration.
