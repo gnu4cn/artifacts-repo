@@ -110,3 +110,20 @@ Use this JSON structure to POST a new release.
 > Note:
 >
 > When use the diesel-orm migration feat, we should use `pg_dump`'s `-a`, `--only-data` option, to only dump the data. And for `diesel migrate run` command, there is a `--all` option for specifying running all the migrations.
+
+
+## About `git tag`
+
++ Add a tag and push it to remote
+
+    - `git tag TAG_NAME`
+
+    - `git tag TAG_NAME -a -m "message"`, Create an “annotated” tag with the given message (instead of prompting)
+
+    - `git push origin TAG_NAME`
+
++ Delete local and remote tag
+
+    - `git tag -d TAG_NAME`
+
+    - `git push --delete origin TAG_NAME`
