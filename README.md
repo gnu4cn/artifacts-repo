@@ -31,9 +31,11 @@ cargo run
 
 ## API list
 
+### `api/release`
+
+
 | Endpoint | Description | Usage |
 | :-- | :-- | :-- |
-| __`api/release`__ |||
 | `api/release/new` | Post a new release. | |
 | `api/release` | List all releases. | `curl -X GET -i https://HOST/api/release --noproxy '*'`|
 | `api/release/today` | List releases of today. | `curl -X GET -i https://HOST/api/release/today --noproxy '*'`|
@@ -42,14 +44,23 @@ cargo run
 | `api/release/repo/date` | Fetch a release with specified repo name and release date. | `curl -X POST -k -H 'Content-Type: application/json' -i 'https://HOST/api/release/repo/date' --data '{"repo":{"org": "Senscomm", "repo": "wise"}, "date": "2023-08-29"}' --noproxy '*'` |
 | `api/release/date/{date}` | Fetch releases with the specific date. | `curl -X GET -i https://HOST/api/release/date/2023-08-23 --noproxy '*'` |
 | `api/release/{id}` | Fetch a release with the specific id. | `curl -X GET -i https://HOST/api/release/1 --noproxy '*'` |
-| __`api/repository`__ |||
+
+
+### `api/repository`
+
+| Endpoint | Description | Usage |
+| :-- | :-- | :-- |
 | `api/repository` | List all `repo`. | `curl -X GET -i https://HOST/api/repository --noproxy '*'` |
 | `api/repository/brief` | List all `repo`'s brief data. | `curl -X GET -k -i 'https://HOST/api/repository/brief' --noproxy '*'` |
 | `api/repository/brief/{repo_id}` | Fetch specific `repo`'s brief data. | `curl -X GET -k -i 'https://HOST/api/repository/brief/1' --noproxy '*'` |
 | `api/repository/defconfig` | List all defconfigs under specific repo. | `curl -X POST -H 'Content-Type: application/json' -i https://HOST/api/repository/defconfig --data '{"org":"Senscomm","repo":"wise"}' --noproxy '*'` |
 | `api/repository/tagged` | List all tagged released under specific repo. | `curl -X POST -k -H 'Content-Type: application/json' -i 'https://HOST/api/repository/tagged' --data '{"org":"Senscomm","repo":"wise"}' --noproxy '*'` |
 | `api/repository/tag/release` | Fetch a release which has the specicified tag under a repository. | `curl -X POST -k -H 'Content-Type: application/json' -i 'https://HOST/api/repository/tag/release' --data '{"repo": {"org":"Senscomm","repo":"wise"}, "tag": "WISE-SDK-1.0.1"}' --noproxy '*'` |
-| __`api/artifact`__ |||
+
+### `api/artifact`
+
+| Endpoint | Description | Usage |
+| :-- | :-- | :-- |
 | `api/artifact/{a_id}` | Fetch a artifact with it's assiociated release, changelogs and affected files info. | `curl -X GET -i https://HOST/api/artifact/2 --noproxy '*'` |
 | `api/artifact` | Fetch a artifact which has specified repo name, release date and defconfig. | `curl -X POST -k -H 'Content-Type: application/json' -i 'https://HOST/api/artifact' --data '{"repo":{"org": "Senscomm", "repo": "wise"}, "date": "2023-08-29", "defconfig": "scm1612_ate_defconfig"}' --noproxy '*'` |
 
