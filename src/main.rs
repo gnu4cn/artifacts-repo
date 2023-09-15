@@ -14,6 +14,7 @@ use futures::FutureExt;
 
 
 mod api;
+mod lib;
 mod models;
 mod schema;
 mod config;

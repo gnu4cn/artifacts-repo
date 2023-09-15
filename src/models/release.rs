@@ -302,11 +302,9 @@ impl ReleaseDTO {
 
         let rel_saved = Release::insert(repo_saved.id, rel.release, conn).unwrap();
 
-        let rel_tag: Option<Tag> = match Tag::find_by_dto(&rel.tag, conn) {
-            Ok(t) => None,
-            Err(err) => {
-                Some(NewTag::save(repo_saved.id, rel_saved.id, rel.tag, conn).unwrap())
-            }
+        let rel_tag: Option<Tag> = match NewTag::save(repo_saved.id, rel_saved.id, rel.tag, conn) {
+            Ok(t) => Some(t),
+            Err(err) => None,
         };
 
         let mut saved_changelogs: Vec<Changelog> = Vec::new();

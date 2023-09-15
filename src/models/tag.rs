@@ -10,9 +10,10 @@ use serde::{Deserialize, Serialize};
 use crate::{
     config::db::Connection,
     schema::tags::{self, dsl::*},
+    lib::logger::{self, Header},
 };
 
-#[derive(Identifiable, Queryable, Serialize, Deserialize, Selectable)]
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Selectable, Debug)]
 #[diesel(table_name = tags)]
 #[diesel(check_for_backend(pg::Pg))]
 pub struct Tag {
@@ -48,7 +49,6 @@ impl Tag {
         conn: &mut Connection
     ) -> QueryResult<Tag> {
         tags.filter(name.eq(new_tag.name.to_string()))
-            .filter(release_id.eq(new_tag.release_id))
             .filter(repository_id.eq(new_tag.repository_id))
             .get_result::<Tag>(conn)
     }
@@ -79,19 +79,24 @@ impl NewTag {
         tag: NewTag,
         conn: &mut Connection
     ) -> Result<Tag, String> {
-        if Tag::find_by_dto(&tag, conn).is_err() {
-            let saved_tag = NewTag {
-                repository_id: repo_id,
-                release_id: rel_id,
-                ..tag
-            };
+        let tag_to_save = NewTag {
+            repository_id: repo_id,
+            release_id: rel_id,
+            ..tag
+        };
 
-            Ok(diesel::insert_into(tags)
-                .values(&saved_tag)
-                .returning(Tag::as_returning())
-                .get_result::<Tag>(conn).unwrap())
-        } else {
-            Err(format! ("Tag '{}' is already existed.", &tag.name))
+
+        match Tag::find_by_dto(&tag_to_save, conn) {
+            Ok(t) => {
+                logger::log(Header::WARNING, &format! ("{:?} existed already.", &tag_to_save.name));
+                Err(format! ("Tag '{}' is already existed.", &tag_to_save.name))
+            },
+            Err(err) => {
+                Ok(diesel::insert_into(tags)
+                    .values(&tag_to_save)
+                    .returning(Tag::as_returning())
+                    .get_result::<Tag>(conn).unwrap())
+            },
         }
     }
 }
