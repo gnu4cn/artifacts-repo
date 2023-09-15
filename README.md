@@ -1,12 +1,12 @@
 # Artifacts Repo -- to store and serve build artifacts from Jenkins
 
-This project utilizes the [Diesel ORM](https://diesel.rs) backed by [PostgreSQL](https://www.postgresql.org/), [Actix Web](https://actix.rs) for setting up a backend restful api server, and uses [Angular](https://angular.io) for getting a frontend UI. This project has taken inspiration from [SakaDream/actix-web-rest-api-with-jwt](https://github.com/SakaDream/actix-web-rest-api-with-jwt).
+This project utilizes the [Diesel ORM](https://diesel.rs) backed by [PostgreSQL](https://www.postgresql.org/), [Actix Web](https://actix.rs) for setting up a backend restful api server, and uses [Angular](https://angular.io) for getting a frontend UI, which located at [gnu4cn/artifacts-repo-spa](https://github.com/gnu4cn/artifacts-repo-spa). This project has taken inspiration from [SakaDream/actix-web-rest-api-with-jwt](https://github.com/SakaDream/actix-web-rest-api-with-jwt).
 
+![Project diagram](./artifacts-repo.png)
 
 ## TODO list
 
 - Implement the pagination feature.
-- Add `is_sdk` field in `artifacts` table.
 
 ## Prerequisites
 
