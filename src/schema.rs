@@ -21,8 +21,8 @@ diesel::table! {
         filesize -> Int8,
         #[max_length = 255]
         build_log_url -> Nullable<Varchar>,
-        release_id -> Int4,
         repository_id -> Int4,
+        release_id -> Int4,
     }
 }
 

@@ -183,15 +183,6 @@ impl Release {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct TaggedRelease {
-    pub repository: Repository,
-    pub release: Release,
-    pub tag: Tag,
-    pub artifacts: Vec<Artifact>,
-}
-
-
-#[derive(Serialize, Deserialize)]
 pub struct ReleaseDAO {
     pub repository: Repository,
     pub release: Release,
