@@ -4,6 +4,13 @@ This project utilizes the [Diesel ORM](https://diesel.rs) backed by [PostgreSQL]
 
 ![Project diagram](./artifacts-repo.png)
 
+*Pic 1: `artfacts-repo` project diagram*
+
+![Database tables design](./artifacts-repo-db-design.png)
+
+*Pic 1: `artfacts-repo` project database tables design*
+
+
 ## TODO list
 
 - Implement the pagination feature.
