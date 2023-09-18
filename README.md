@@ -6,7 +6,7 @@ This project utilizes the [Diesel ORM](https://diesel.rs) backed by [PostgreSQL]
 
 *Chart: `artfacts-repo` project diagram*
 
-![Database tables design](./artifacts-repo-db-design.png)
+![Database tables design](./artifacts-repo-db-tables-design.png)
 
 *Chart: `artfacts-repo` project database tables design*
 
