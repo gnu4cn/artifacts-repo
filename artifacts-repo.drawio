@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2023-09-18T05:39:46.185Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.7.5 Chrome/114.0.5735.289 Electron/25.8.1 Safari/537.36" etag="DBsjdE0Ln6_yRpFtCu0M" version="21.7.5" type="device">
+<mxfile host="Electron" modified="2023-09-19T01:47:01.041Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.7.5 Chrome/114.0.5735.289 Electron/25.8.1 Safari/537.36" etag="6qU1s8r-CviRIKj9XNbh" version="21.7.5" type="device">
   <diagram name="第 1 页" id="aNOy_0bnumjarbj2fQwa">
-    <mxGraphModel dx="1341" dy="752" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+    <mxGraphModel dx="1101" dy="752" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -73,8 +73,8 @@
         <mxCell id="AIhtDNjgpqZSeVCNlgIg-22" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;JSON&lt;br&gt;(Restful API)&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="645" y="275" width="100" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="AIhtDNjgpqZSeVCNlgIg-25" value="&lt;b&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;The artifacts-repo restful api backend&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="360" y="700" width="340" height="40" as="geometry" />
+        <mxCell id="AIhtDNjgpqZSeVCNlgIg-25" value="&lt;b&gt;&lt;font style=&quot;font-size: 24px;&quot;&gt;The artifacts-repo restful api backend&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="305" y="700" width="450" height="40" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
