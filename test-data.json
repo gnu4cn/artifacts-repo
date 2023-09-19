@@ -8,6 +8,11 @@
     "release_channel":"nightly",
     "repository_id": 0
   },
+  "tag": {
+    "name": "WISE-SDK-1.0.1",
+    "release_id": 0,
+    "repository_id": 0
+  },
   "changelogs":[{
     "commit_id":"ae09bf3",
     "commit_comment":"Test comment.",
