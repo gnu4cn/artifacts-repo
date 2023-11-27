@@ -61,7 +61,7 @@ cargo run
 | `api/repository/brief` | List all `repo`'s brief data. | `curl -X GET -k -i 'https://HOST/api/repository/brief' --noproxy '*'` |
 | `api/repository/brief/{repo_id}` | Fetch specific `repo`'s brief data. | `curl -X GET -k -i 'https://HOST/api/repository/brief/1' --noproxy '*'` |
 | `api/repository/defconfig` | List all defconfigs under specific repo. | `curl -X POST -H 'Content-Type: application/json' -i https://HOST/api/repository/defconfig --data '{"org":"Senscomm","repo":"wise"}' --noproxy '*'` |
-| `api/repository/tagged` | List all tagged released under specific repo. | `curl -X POST -k -H 'Content-Type: application/json' -i 'https://HOST/api/repository/tagged' --data '{"org":"Senscomm","repo":"wise"}' --noproxy '*'` |
+| `api/repository/tagged` | List all tagged releases under specific repo. | `curl -X POST -k -H 'Content-Type: application/json' -i 'https://HOST/api/repository/tagged' --data '{"org":"Senscomm","repo":"wise"}' --noproxy '*'` |
 | `api/repository/tag/release` | Fetch a release which has the specicified tag under a repository. | `curl -X POST -k -H 'Content-Type: application/json' -i 'https://HOST/api/repository/tag/release' --data '{"repo": {"org":"Senscomm","repo":"wise"}, "tag": "WISE-SDK-1.0.1"}' --noproxy '*'` |
 
 ### `api/artifact`
